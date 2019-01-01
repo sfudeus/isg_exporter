@@ -1,0 +1,13 @@
+[Unit]
+Description=ISG Exporter
+After=network.target
+
+[Service]
+Type=simple
+User=daemon
+EnvironmentFile=/etc/default/isg_exporter
+ExecStart=/usr/local/bin/isg_exporter
+
+[Install]
+WantedBy=multi-user.target
+
