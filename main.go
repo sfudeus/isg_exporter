@@ -12,12 +12,12 @@ import (
 	"net/http"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/headzoo/surf"
 	"github.com/headzoo/surf/browser"
 	"github.com/jessevdk/go-flags"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"gopkg.in/headzoo/surf.v1"
 )
 
 // IsgValue is a wrapper for a single data value with its unit
