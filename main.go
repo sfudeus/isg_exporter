@@ -97,6 +97,8 @@ func prepare() {
 	timer := prometheus.NewTimer(loginDuration)
 	defer timer.ObserveDuration()
 
+	log.Println("Performing Login for ISG")
+
 	bow = surf.NewBrowser()
 	err := bow.Open(options.URL + "?s=1,0")
 	if err != nil {
@@ -175,21 +177,29 @@ func normalizeLabel(s string) string {
 	s = strings.Map(func(r rune) rune {
 		switch {
 		case (r == ' ' || r == '-'):
+			// canonical separator "_"
 			return '_'
 		case r == '.' || r == '(' || r == ')':
+			// ignore other special characters or abbreviation soignals
 			return -1
 		}
 		return r
 	}, s)
 
-	s = strings.Replace(s, "ü", "ue", -1)
-	s = strings.Replace(s, "Ü", "UE", -1)
+	s = strings.ToLower(s)
 
-	return strings.ToLower(strings.TrimSpace(s))
+	// need to convert umlaut for german output since they aren't valid prometheus metric names
+	s = strings.Replace(s, "ü", "ue", -1)
+	s = strings.Replace(s, "ä", "ae", -1)
+	s = strings.Replace(s, "ö", "oe", -1)
+
+	return strings.TrimSpace(s)
 }
 
 func normalizeValue(s string) IsgValue {
 	valueFields := strings.Fields(s)
+	// ISG exports numbers with decimal separator ",", even with language setting english
+	// needs to be converted to be parsed as float
 	value := strings.Replace(valueFields[0], ",", ".", -1)
 	unit := ""
 	float, err := strconv.ParseFloat(value, 64)
