@@ -1,38 +1,38 @@
 package main
 
 import (
-	"os"
+	"fmt"
 	"log"
+	"os"
 	"strconv"
 	"strings"
 	"time"
-	"fmt"
-	
-	"net/http"
+
 	"encoding/json"
+	"net/http"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/headzoo/surf/browser"
+	"github.com/jessevdk/go-flags"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"gopkg.in/headzoo/surf.v1"
-	"github.com/jessevdk/go-flags"
 )
 
 // IsgValue is a wrapper for a single data value with its unit
 type IsgValue struct {
 	Value float64
-	Unit string
+	Unit  string
 }
 
 var options struct {
-	Port int64 `long:"port" default:"8080" description:"The address to listen on for HTTP requests." env:"EXPORTER_PORT"`
-	Interval int64 `long:"interval" default:"60" env:"INTERVAL" description:"The frequency in seconds in which to gather data"`
-	URL string `long:"url" env:"ISG_URL" description:"URL for ISG"`
-	User string `long:"user" env:"ISG_USER" description:"username for ISG"`
+	Port     int64  `long:"port" default:"8080" description:"The address to listen on for HTTP requests." env:"EXPORTER_PORT"`
+	Interval int64  `long:"interval" default:"60" env:"INTERVAL" description:"The frequency in seconds in which to gather data"`
+	URL      string `long:"url" env:"ISG_URL" description:"URL for ISG"`
+	User     string `long:"user" env:"ISG_USER" description:"username for ISG"`
 	Password string `long:"password" env:"ISG_PASSWORD" description:"password for ISG"`
-	Debug bool `long:"debug"`
+	Debug    bool   `long:"debug"`
 }
 
 var (
@@ -44,18 +44,18 @@ var bow *browser.Browser
 var (
 	loginDuration = promauto.NewSummary(prometheus.SummaryOpts{
 		Namespace: "isg",
-		Name: "loginduration",
-		Help: "The duration of login",
+		Name:      "loginduration",
+		Help:      "The duration of login",
 	})
 	gatheringDuration = promauto.NewSummary(prometheus.SummaryOpts{
 		Namespace: "isg",
-		Name: "gatheringduration",
-		Help: "The duration of data gatherings",
+		Name:      "gatheringduration",
+		Help:      "The duration of data gatherings",
 	})
 	statusDuration = promauto.NewSummary(prometheus.SummaryOpts{
 		Namespace: "isg",
-		Name: "statusduration",
-		Help: "The duration is status requests",
+		Name:      "statusduration",
+		Help:      "The duration is status requests",
 	})
 
 	// map of all gauges (normal and flags)
@@ -70,6 +70,8 @@ func main() {
 	if err != nil {
 		os.Exit(1)
 	}
+
+	validate()
 
 	gaugesMap = make(map[string]prometheus.Gauge)
 	flagGaugesMap = make(map[string]prometheus.Gauge)
@@ -91,6 +93,18 @@ func main() {
 	http.HandleFunc("/status", getData)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", options.Port), nil))
 
+}
+
+func validate() {
+	if "" == options.URL {
+		log.Fatalln("Missing URL")
+	}
+	if "" == options.User {
+		log.Fatalln("Missing username")
+	}
+	if "" == options.Password {
+		log.Fatalln("Missing password")
+	}
 }
 
 func prepare() {
@@ -156,7 +170,7 @@ func gatherData() {
 
 func createOrRetrieve(label string, unit string) prometheus.Gauge {
 	val, exists := gaugesMap[label]
-	if ( ! exists ) {
+	if !exists {
 		help := ""
 		if len(unit) > 0 {
 			help = "Metric " + label + " in " + unit
@@ -165,8 +179,8 @@ func createOrRetrieve(label string, unit string) prometheus.Gauge {
 		}
 		val = promauto.NewGauge(prometheus.GaugeOpts{
 			Namespace: "isg",
-			Name: label,
-			Help: help,
+			Name:      label,
+			Help:      help,
 		})
 		gaugesMap[label] = val
 	}
