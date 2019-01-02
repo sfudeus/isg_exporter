@@ -16,16 +16,16 @@ Usage:
   isg_exporter [OPTIONS]
 
 Application Options:
-      --port=     The address to listen on for HTTP requests. (default: 8080) [$EXPORTER_PORT]
-      --interval= The frequency in seconds in which to gather data (default: 60) [$INTERVAL]
-      --url=      URL for ISG [$ISG_URL]
-      --user=     username for ISG [$ISG_USER]
-      --password= password for ISG [$ISG_PASSWORD]
+      --port=         The address to listen on for HTTP requests. (default: 8080) [$EXPORTER_PORT]
+      --interval=     The frequency in seconds in which to gather data (default: 60) [$INTERVAL]
+      --url=          URL for ISG [$ISG_URL]
+      --user=         username for ISG [$ISG_USER]
+      --password=     password for ISG [$ISG_PASSWORD]
+      --skipCircuit2  Toogle to skip data for circuit 2 [$SKIP_CIRCUIT_2]
       --debug
 
 Help Options:
-  -h, --help      Show this help message
-  ```
+  -h, --help          Show this help message  ```
 
 ## Metrics
 
@@ -43,6 +43,8 @@ Examples:
 * `isg_flag_schaltprogramm_aktiv 1.0`
 * `isg_flag_status_ok 1.0`
 * ...
+
+Metrics for circuit 2 can be skipped (e.g. when not in use to reduce number of metrics) by providing `--skipCircuit2` on the command line.
 
 ## RESTFul status
 
