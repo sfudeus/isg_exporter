@@ -236,5 +236,6 @@ func getData(w http.ResponseWriter, r *http.Request) {
 	timer := prometheus.NewTimer(statusDuration)
 	defer timer.ObserveDuration()
 	json, _ := json.Marshal(valuesMap)
+	w.Header().Add("Content-Type", "application/json")
 	w.Write(json)
 }
