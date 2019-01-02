@@ -25,7 +25,8 @@ Application Options:
       --debug
 
 Help Options:
-  -h, --help          Show this help message  ```
+  -h, --help          Show this help message  
+```
 
 ## Metrics
 
