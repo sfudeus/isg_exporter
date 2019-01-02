@@ -34,7 +34,7 @@ var options struct {
 	Password     string `long:"password" env:"ISG_PASSWORD" description:"password for ISG"`
 	SkipCircuit2 bool   `long:"skipCircuit2" description:"Toogle to skip data for circuit 2" env:"SKIP_CIRCUIT_2"`
 	//TODO: SkipCooling  bool   `long:"skipCooling" description:"Toggle to skip data for cooling" env:"SKIP_COOLING"`
-	Debug        bool   `long:"debug"`
+	Debug bool `long:"debug"`
 }
 
 var (
@@ -155,10 +155,10 @@ func gatherData() {
 
 		if strings.Index(label, "hk2") > -1 && options.SkipCircuit2 {
 			return
-		/* TODO
-		} else if string.index(label, kuehlen) > -1 && options.SkipCooling {
-			return
-		*/
+			/* TODO
+			} else if string.index(label, kuehlen) > -1 && options.SkipCooling {
+				return
+			*/
 		}
 
 		if value != "" {
@@ -209,7 +209,7 @@ func normalizeLabel(s string) string {
 			return -1
 		}
 		return r
-	}, s)
+	}, strings.TrimSpace(s))
 
 	s = strings.ToLower(s)
 
@@ -218,7 +218,7 @@ func normalizeLabel(s string) string {
 	s = strings.Replace(s, "ä", "ae", -1)
 	s = strings.Replace(s, "ö", "oe", -1)
 
-	return strings.TrimSpace(s)
+	return s
 }
 
 func normalizeValue(s string) IsgValue {
