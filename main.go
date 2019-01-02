@@ -27,12 +27,14 @@ type IsgValue struct {
 }
 
 var options struct {
-	Port     int64  `long:"port" default:"8080" description:"The address to listen on for HTTP requests." env:"EXPORTER_PORT"`
-	Interval int64  `long:"interval" default:"60" env:"INTERVAL" description:"The frequency in seconds in which to gather data"`
-	URL      string `long:"url" env:"ISG_URL" description:"URL for ISG"`
-	User     string `long:"user" env:"ISG_USER" description:"username for ISG"`
-	Password string `long:"password" env:"ISG_PASSWORD" description:"password for ISG"`
-	Debug    bool   `long:"debug"`
+	Port         int64  `long:"port" default:"8080" description:"The address to listen on for HTTP requests." env:"EXPORTER_PORT"`
+	Interval     int64  `long:"interval" default:"60" env:"INTERVAL" description:"The frequency in seconds in which to gather data"`
+	URL          string `long:"url" env:"ISG_URL" description:"URL for ISG"`
+	User         string `long:"user" env:"ISG_USER" description:"username for ISG"`
+	Password     string `long:"password" env:"ISG_PASSWORD" description:"password for ISG"`
+	SkipCircuit2 bool   `long:"skipCircuit2" description:"Toogle to skip data for circuit 2" env:"SKIP_CIRCUIT_2"`
+	//TODO: SkipCooling  bool   `long:"skipCooling" description:"Toggle to skip data for cooling" env:"SKIP_COOLING"`
+	Debug        bool   `long:"debug"`
 }
 
 var (
@@ -150,6 +152,15 @@ func gatherData() {
 		value := strings.TrimSpace(s.Find("td.value").Text())
 
 		label := normalizeLabel(key)
+
+		if strings.Index(label, "hk2") > -1 && options.SkipCircuit2 {
+			return
+		/* TODO
+		} else if string.index(label, kuehlen) > -1 && options.SkipCooling {
+			return
+		*/
+		}
+
 		if value != "" {
 			isgValue := normalizeValue(value)
 			valuesMap[label] = isgValue
