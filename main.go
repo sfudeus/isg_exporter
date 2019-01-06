@@ -1,5 +1,7 @@
 package main
 
+import "net/http/pprof"
+
 import (
 	"fmt"
 	"log"
@@ -27,12 +29,13 @@ type IsgValue struct {
 }
 
 var options struct {
-	Port         int64  `long:"port" default:"8080" description:"The address to listen on for HTTP requests." env:"EXPORTER_PORT"`
-	Interval     int64  `long:"interval" default:"60" env:"INTERVAL" description:"The frequency in seconds in which to gather data"`
-	URL          string `long:"url" env:"ISG_URL" description:"URL for ISG"`
-	User         string `long:"user" env:"ISG_USER" description:"username for ISG"`
-	Password     string `long:"password" env:"ISG_PASSWORD" description:"password for ISG"`
-	SkipCircuit2 bool   `long:"skipCircuit2" description:"Toogle to skip data for circuit 2" env:"SKIP_CIRCUIT_2"`
+	Port            int64  `long:"port" default:"8080" description:"The address to listen on for HTTP requests." env:"EXPORTER_PORT"`
+	Interval        int64  `long:"interval" default:"60" env:"INTERVAL" description:"The frequency in seconds in which to gather data"`
+	URL             string `long:"url" env:"ISG_URL" description:"URL for ISG"`
+	User            string `long:"user" env:"ISG_USER" description:"username for ISG"`
+	Password        string `long:"password" env:"ISG_PASSWORD" description:"password for ISG"`
+	BrowserRollover int64  `long:"browserRollover" default:"60" description:"number of iterations until the internal browser is recreated"`
+	SkipCircuit2    bool   `long:"skipCircuit2" description:"Toogle to skip data for circuit 2" env:"SKIP_CIRCUIT_2"`
 	//TODO: SkipCooling  bool   `long:"skipCooling" description:"Toggle to skip data for cooling" env:"SKIP_COOLING"`
 	Debug bool `long:"debug"`
 }
@@ -41,7 +44,10 @@ var (
 	valuesMap map[string]IsgValue
 )
 
-var bow *browser.Browser
+var (
+	bow                 *browser.Browser
+	browserUsageCounter int64
+)
 
 var (
 	loginDuration = promauto.NewSummary(prometheus.SummaryOpts{
@@ -93,6 +99,9 @@ func main() {
 
 	http.Handle("/metrics", promhttp.Handler())
 	http.HandleFunc("/status", getData)
+	if options.Debug {
+		http.HandleFunc("/debug/pprof", pprof.Index)
+	}
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", options.Port), nil))
 
 }
@@ -120,6 +129,7 @@ func prepare() {
 	if err != nil {
 		log.Panicln(err)
 	}
+	browserUsageCounter = 1
 
 	fm, err := bow.Form("form#werte")
 	if err != nil {
@@ -142,11 +152,18 @@ func gatherData() {
 		flagRemovalList[key] = gauge
 	}
 
+	if browserUsageCounter > options.BrowserRollover {
+		log.Println("Redo prepare because of browser rollover")
+		prepare()
+	}
+
 	err := bow.Open(options.URL + "?s=1,0")
+	browserUsageCounter++
 	if err != nil {
 		log.Println("Redo prepare because of error: " + err.Error())
 		prepare()
 	}
+
 	bow.Find("form#werte table.info tr.even,tr.odd").Each(func(_ int, s *goquery.Selection) {
 		key := s.Find("td.key").Text()
 		value := strings.TrimSpace(s.Find("td.value").Text())
