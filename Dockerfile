@@ -1,5 +1,4 @@
-FROM golang:1.11 AS builder
-ENV GO111MODULE=on
+FROM golang:1.13 AS builder
 RUN mkdir /build
 COPY *.go go.* /build/
 WORKDIR /build
