@@ -1,4 +1,5 @@
-FROM golang:1.14 AS builder
+ARG GO_VERSION=1.14
+FROM golang:${GO_VERSION} AS builder
 RUN mkdir /build
 COPY *.go go.* /build/
 WORKDIR /build
