@@ -1,15 +1,15 @@
 module github.com/sfudeus/isg_exporter
 
 require (
-	github.com/PuerkitoBio/goquery v1.5.1
-	github.com/golang/protobuf v1.4.0 // indirect
+	github.com/PuerkitoBio/goquery v1.6.0
+	github.com/andybalholm/cascadia v1.2.0 // indirect
 	github.com/headzoo/surf v1.0.0
 	github.com/headzoo/ut v0.0.0-20181013193318-a13b5a7a02ca // indirect
 	github.com/jessevdk/go-flags v1.4.0
-	github.com/prometheus/client_golang v1.5.1
-	github.com/prometheus/procfs v0.0.11 // indirect
-	golang.org/x/net v0.0.0-20200324143707-d3edc9973b7e // indirect
-	golang.org/x/sys v0.0.0-20200413165638-669c56c373c4 // indirect
+	github.com/prometheus/client_golang v1.8.0
+	golang.org/x/net v0.0.0-20201021035429-f5854403a974 // indirect
+	golang.org/x/sys v0.0.0-20201020230747-6e5568b54d1a // indirect
+	google.golang.org/protobuf v1.25.0 // indirect
 )
 
 go 1.13
