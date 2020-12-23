@@ -58,3 +58,7 @@ When using systemd, a sample unit file is provided in resources/systemd. This re
 ## Docker
 
 A from-scratch docker image is automatically built for each new version and pushed to `sfudeus/isg_exporter:${version}` and `sfudeus/isg_exporter:latest`.
+
+## Grafana
+
+A sample Grafana dashboard (using prometheus) can be found at `resources/grafana`.
