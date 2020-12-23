@@ -4,7 +4,7 @@ A simple tool to extract relevant status data from the Internet Service Gateway 
 
 `isg_exporter` is written in go and provided as a single binary.
 
-`isg_exporter` will listen on a freely defineable port and emit data in prometheus format which is periodically fetched from your ISG by scraping the web interface.
+`isg_exporter` will listen on a freely defineable port and emit data in prometheus format at `/metrics` which is periodically fetched from your ISG by scraping the web interface.
 Acccess credentials can be configured as either cli parameters or environment parameters.
 
 ## Usage
@@ -25,7 +25,7 @@ Application Options:
       --debug
 
 Help Options:
-  -h, --help          Show this help message  
+  -h, --help          Show this help message
 ```
 
 ## Metrics
@@ -54,3 +54,7 @@ So far, `isg_exporter` support a single additional restful `/status` endpoint, w
 ## Systemd
 
 When using systemd, a sample unit file is provided in resources/systemd. This refers to an installation of the single go binary in /usr/local/bin. Environment is configured to be configured in `/etc/default/isg_exporter`.
+
+## Docker
+
+A from-scratch docker image is automatically built for each new version and pushed to `sfudeus/isg_exporter:${version}` and `sfudeus/isg_exporter:latest`.
