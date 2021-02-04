@@ -29,6 +29,16 @@ func TestNormalizeValue(t *testing.T) {
 	if res.Value != 3345 {
 		t.Errorf("Expected 3345, but got %f", res.Value)
 	}
+
+	res = normalizeValue("18.321kWh")
+	if res.Unit != "kWh" {
+		t.Errorf("Expected kWh as unit, but got %s", res.Unit)
+	}
+	if res.Value != 18.321 {
+		t.Errorf("Expected 18.321, but got %f", res.Value)
+	}
+
+
 }
 
 func TestNormalizeLabel(t *testing.T) {
