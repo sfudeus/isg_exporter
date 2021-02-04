@@ -238,7 +238,7 @@ func normalizeLabel(s string) string {
 }
 
 func normalizeValue(s string) IsgValue {
-	re := regexp.MustCompile(`(?P<value>[0-9,.]+)( ?)(?P<unit>[a-zA-Z]*)`)
+	re := regexp.MustCompile(`(?P<value>[0-9,.]+)( ?)(?P<unit>[a-zA-Z°%/²³]*)`)
 	matches := re.FindStringSubmatch(s)
 	// ISG exports numbers with decimal separator ",", even with language setting english
 	// needs to be converted to be parsed as float
