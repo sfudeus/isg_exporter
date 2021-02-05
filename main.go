@@ -1,17 +1,16 @@
 package main
 
-import "net/http/pprof"
-
 import (
+	"encoding/json"
 	"fmt"
 	"log"
+	"net/http"
+	"net/http/pprof"
 	"os"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
-
-	"encoding/json"
-	"net/http"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/headzoo/surf"
@@ -222,7 +221,7 @@ func normalizeLabel(s string) string {
 			// canonical separator "_"
 			return '_'
 		case r == '.' || r == '(' || r == ')':
-			// ignore other special characters or abbreviation soignals
+			// ignore other special characters or abbreviation signals
 			return -1
 		}
 		return r
@@ -239,18 +238,19 @@ func normalizeLabel(s string) string {
 }
 
 func normalizeValue(s string) IsgValue {
-	valueFields := strings.Fields(s)
+	re := regexp.MustCompile(`(?P<value>[0-9,.]+)( ?)(?P<unit>[a-zA-Z°%/²³]*)`)
+	matches := re.FindStringSubmatch(s)
 	// ISG exports numbers with decimal separator ",", even with language setting english
 	// needs to be converted to be parsed as float
-	value := strings.Replace(valueFields[0], ",", ".", -1)
+	value := strings.Replace(matches[re.SubexpIndex("value")], ",", ".", -1)
 	unit := ""
 	float, err := strconv.ParseFloat(value, 64)
 	if err != nil {
 		log.Panicln("Failed to parse value " + value)
 	}
 
-	if len(valueFields) > 1 {
-		unit = valueFields[1]
+	if len(matches) > 2 {
+		unit = matches[re.SubexpIndex("unit")]
 		if unit == "MWh" {
 			float *= 1000
 			unit = "kWh"
