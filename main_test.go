@@ -45,10 +45,17 @@ func TestNormalizeValue(t *testing.T) {
 	if res.Value != 15.8 {
 		t.Errorf("Expected 15.8, but got %f", res.Value)
 	}
+
+	res = normalizeValue("-15,8°C")
+	if res.Unit != "°C" {
+		t.Errorf("Expected °C as unit, but got %s", res.Unit)
+	}
+	if res.Value != -15.8 {
+		t.Errorf("Expected -15.8, but got %f", res.Value)
+	}
 	res = normalizeValue("1 l/min")
 	res = normalizeValue("1 %")
 	res = normalizeValue("1 m³/h")
-
 
 }
 
