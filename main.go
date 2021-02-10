@@ -156,7 +156,20 @@ func gatherData() {
 		prepare()
 	}
 
-	err := bow.Open(options.URL + "?s=1,0")
+	parsePage("1,0", flagRemovalList)
+	parsePage("1,1", flagRemovalList)
+	parsePage("2,0", flagRemovalList)
+	parsePage("2,1", flagRemovalList)
+	parsePage("2,3", flagRemovalList)
+
+	for _, gauge := range flagRemovalList {
+		gauge.Set(0)
+	}
+}
+
+func parsePage(page string, flagRemovalList map[string]prometheus.Gauge) {
+
+	err := bow.Open(options.URL + "?s=" + page)
 	browserUsageCounter++
 	if err != nil {
 		log.Println("Redo prepare because of error: " + err.Error())
@@ -189,10 +202,6 @@ func gatherData() {
 			delete(flagRemovalList, label)
 		}
 	})
-
-	for _, gauge := range flagRemovalList {
-		gauge.Set(0)
-	}
 }
 
 func createOrRetrieve(label string, unit string) prometheus.Gauge {
@@ -217,7 +226,7 @@ func createOrRetrieve(label string, unit string) prometheus.Gauge {
 func normalizeLabel(s string) string {
 	s = strings.Map(func(r rune) rune {
 		switch {
-		case (r == ' ' || r == '-'):
+		case (r == ' ' || r == '-' || r == '/'):
 			// canonical separator "_"
 			return '_'
 		case r == '.' || r == '(' || r == ')':
