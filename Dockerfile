@@ -1,11 +1,13 @@
 ARG GO_VERSION=1.14
-FROM golang:${GO_VERSION} AS builder
+FROM --platform=$BUILDPLATFORM golang:${GO_VERSION} AS builder
 RUN mkdir /build
 COPY *.go go.* /build/
 WORKDIR /build
-RUN CGO_ENABLED=0 GOOS=linux go build -o isg_exporter
 
-FROM scratch
+ARG TARGETOS
+ARG TARGETARCH
+RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH go build -o isg_exporter
+
+FROM scratch AS target
 COPY --from=builder /build/isg_exporter /
 ENTRYPOINT [ "/isg_exporter" ]
-

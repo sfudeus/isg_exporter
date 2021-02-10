@@ -135,6 +135,8 @@ github.com/hashicorp/memberlist v0.1.3/go.mod h1:ajVTdAv/9Im8oMAAj5G31PhhMCZJV2p
 github.com/hashicorp/serf v0.8.2/go.mod h1:6hOLApaqBFA1NXqRQAsxw9QxuDEvNxSQRwA/JwenrHc=
 github.com/headzoo/surf v1.0.0 h1:d2h9ftKeQYj7tKqAjQtAA0lJVkO8cTxvzdXLynmNnHM=
 github.com/headzoo/surf v1.0.0/go.mod h1:/bct0m/iMNEqpn520y01yoaWxsAEigGFPnvyR1ewR5M=
+github.com/headzoo/surf v1.0.1-0.20180909134844-a4a8c16c01dc h1:xmXRlxaMHvNeB+EZ6HmWeLSifHbxQvZO/K1x9ICWOR0=
+github.com/headzoo/surf v1.0.1-0.20180909134844-a4a8c16c01dc/go.mod h1:/bct0m/iMNEqpn520y01yoaWxsAEigGFPnvyR1ewR5M=
 github.com/headzoo/ut v0.0.0-20181013193318-a13b5a7a02ca h1:utFgFwgxaqx5OthzE3DSGrtOq7rox5r2sxZ2wbfTuK0=
 github.com/headzoo/ut v0.0.0-20181013193318-a13b5a7a02ca/go.mod h1:8926sG02TCOX4RFRzIMFIzRw4xuc/TwO2gtN7teMJZ4=
 github.com/hpcloud/tail v1.0.0/go.mod h1:ab1qPbhIpdTxEkNHXyeSf5vhxWSCs/tWer42PpOxQnU=
