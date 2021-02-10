@@ -1,8 +1,8 @@
 {
   "__inputs": [
     {
-      "name": "DS_PROMETHEUS",
-      "label": "Prometheus",
+      "name": "DS_VICTORIAMETRICS",
+      "label": "VictoriaMetrics",
       "description": "",
       "type": "datasource",
       "pluginId": "prometheus",
@@ -14,7 +14,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "7.3.5"
+      "version": "7.4.0"
     },
     {
       "type": "panel",
@@ -54,7 +54,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": "${DS_VICTORIAMETRICS}",
       "fieldConfig": {
         "defaults": {
           "custom": {},
@@ -89,7 +89,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.5",
+      "pluginVersion": "7.4.0",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -185,6 +185,20 @@
           "intervalFactor": 1,
           "legendFormat": "Außentemperatur",
           "refId": "G"
+        },
+        {
+          "expr": "max(isg_verdampferausg_temp)",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Verdampferausgang",
+          "refId": "H"
+        },
+        {
+          "expr": "max(isg_kuehlungstemp)",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Kühlungstemperatur",
+          "refId": "I"
         }
       ],
       "thresholds": [],
@@ -207,6 +221,7 @@
       },
       "yaxes": [
         {
+          "$$hashKey": "object:419",
           "format": "celsius",
           "label": null,
           "logBase": 1,
@@ -215,6 +230,7 @@
           "show": true
         },
         {
+          "$$hashKey": "object:420",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -233,7 +249,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": "${DS_VICTORIAMETRICS}",
       "fieldConfig": {
         "defaults": {
           "custom": {},
@@ -269,13 +285,14 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.5",
+      "pluginVersion": "7.4.0",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
       "seriesOverrides": [
         {
-          "alias": "/druck/",
+          "$$hashKey": "object:117",
+          "alias": "/Druck/i",
           "yaxis": 2
         }
       ],
@@ -356,6 +373,20 @@
           "intervalFactor": 1,
           "legendFormat": "Heißgas",
           "refId": "E"
+        },
+        {
+          "expr": "max(isg_druck_heizkreis)",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Druck Heizkreis",
+          "refId": "F"
+        },
+        {
+          "expr": "max(isg_nd_gefiltert)",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Niederdruck gefiltert",
+          "refId": "G"
         }
       ],
       "thresholds": [],
@@ -378,6 +409,7 @@
       },
       "yaxes": [
         {
+          "$$hashKey": "object:130",
           "format": "celsius",
           "label": null,
           "logBase": 1,
@@ -386,6 +418,7 @@
           "show": true
         },
         {
+          "$$hashKey": "object:131",
           "format": "pressurebar",
           "label": null,
           "logBase": 1,
@@ -404,7 +437,104 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": "${DS_VICTORIAMETRICS}",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 19,
+        "x": 0,
+        "y": 18
+      },
+      "hiddenSeries": false,
+      "id": 18,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.4.0",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "max(isg_volumenstrom)",
+          "interval": "",
+          "legendFormat": "Volumenstrom",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Volumenstrom",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:197",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:198",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_VICTORIAMETRICS}",
       "fieldConfig": {
         "defaults": {
           "custom": {},
@@ -418,7 +548,7 @@
         "h": 9,
         "w": 19,
         "x": 0,
-        "y": 18
+        "y": 26
       },
       "hiddenSeries": false,
       "id": 16,
@@ -439,7 +569,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.5",
+      "pluginVersion": "7.4.0",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -519,6 +649,34 @@
           "intervalFactor": 1,
           "legendFormat": "WW Bereitung",
           "refId": "E"
+        },
+        {
+          "expr": "max(isg_flag_evu_sperre)",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "EVU-Sperre",
+          "refId": "F"
+        },
+        {
+          "expr": "max(isg_flag_verdichter)",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Verdichter",
+          "refId": "G"
+        },
+        {
+          "expr": "max(isg_flag_hd_waechter)",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "HD-Wächter",
+          "refId": "H"
+        },
+        {
+          "expr": "max(isg_flag_luefter)",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Lüfter",
+          "refId": "I"
         }
       ],
       "thresholds": [],
@@ -541,6 +699,7 @@
       },
       "yaxes": [
         {
+          "$$hashKey": "object:252",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -549,6 +708,7 @@
           "show": true
         },
         {
+          "$$hashKey": "object:253",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -567,7 +727,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": "${DS_VICTORIAMETRICS}",
       "fieldConfig": {
         "defaults": {
           "custom": {},
@@ -581,7 +741,7 @@
         "h": 9,
         "w": 19,
         "x": 0,
-        "y": 27
+        "y": 35
       },
       "hiddenSeries": false,
       "id": 14,
@@ -602,7 +762,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.5",
+      "pluginVersion": "7.4.0",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -658,6 +818,13 @@
           "intervalFactor": 1,
           "legendFormat": "Notheizstufen",
           "refId": "B"
+        },
+        {
+          "expr": "max(isg_position_ventil)",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Position Ventil",
+          "refId": "C"
         }
       ],
       "thresholds": [],
@@ -680,6 +847,7 @@
       },
       "yaxes": [
         {
+          "$$hashKey": "object:474",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -688,6 +856,7 @@
           "show": true
         },
         {
+          "$$hashKey": "object:475",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -706,7 +875,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": "${DS_VICTORIAMETRICS}",
       "fieldConfig": {
         "defaults": {
           "custom": {},
@@ -720,7 +889,7 @@
         "h": 9,
         "w": 19,
         "x": 0,
-        "y": 36
+        "y": 44
       },
       "hiddenSeries": false,
       "id": 10,
@@ -738,8 +907,11 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
       "percentage": false,
-      "pluginVersion": "7.3.5",
+      "pluginVersion": "7.4.0",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -901,7 +1073,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": "${DS_VICTORIAMETRICS}",
       "fieldConfig": {
         "defaults": {
           "custom": {},
@@ -915,7 +1087,7 @@
         "h": 8,
         "w": 19,
         "x": 0,
-        "y": 45
+        "y": 53
       },
       "hiddenSeries": false,
       "id": 4,
@@ -932,8 +1104,11 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
       "percentage": false,
-      "pluginVersion": "7.3.5",
+      "pluginVersion": "7.4.0",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -1045,7 +1220,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "${DS_PROMETHEUS}",
+      "datasource": "${DS_VICTORIAMETRICS}",
       "fieldConfig": {
         "defaults": {
           "custom": {},
@@ -1059,7 +1234,7 @@
         "h": 8,
         "w": 19,
         "x": 0,
-        "y": 53
+        "y": 61
       },
       "hiddenSeries": false,
       "id": 2,
@@ -1076,8 +1251,11 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
       "percentage": false,
-      "pluginVersion": "7.3.5",
+      "pluginVersion": "7.4.0",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -1183,17 +1361,168 @@
         "align": false,
         "alignLevel": null
       }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_VICTORIAMETRICS}",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 19,
+        "x": 0,
+        "y": 69
+      },
+      "hiddenSeries": false,
+      "id": 20,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.4.0",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "max(isg_p_faktor)",
+          "interval": "",
+          "legendFormat": "P-Faktor",
+          "refId": "A"
+        },
+        {
+          "expr": "max(isg_i_faktor)",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "I-Faktor",
+          "refId": "B"
+        },
+        {
+          "expr": "max(isg_d_faktor)",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "D-Faktor",
+          "refId": "C"
+        },
+        {
+          "expr": "max(isg_oeffnung_exv)",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Öffnung Exv",
+          "refId": "D"
+        },
+        {
+          "expr": "max(isg_oeffnung_exv_vorst)",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Öffnung Exv Vorst.",
+          "refId": "E"
+        },
+        {
+          "expr": "max(isg_dynamik_faktor)",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Dynamik-Faktor",
+          "refId": "F"
+        },
+        {
+          "expr": "max(isg_pendeln_rel)",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Pendeln rel.",
+          "refId": "G"
+        },
+        {
+          "expr": "max(isg_akt_mode_eve)",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Akt. Mode EVE",
+          "refId": "H"
+        },
+        {
+          "expr": "max(isg_akt_mode_iws)",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Akt. Mode IWS",
+          "refId": "I"
+        }
+      ],
+      "thresholds": [],
+      "timeRegions": [],
+      "title": "Analyse",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:533",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:534",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     }
   ],
   "refresh": false,
-  "schemaVersion": 26,
+  "schemaVersion": 27,
   "style": "dark",
   "tags": [],
   "templating": {
     "list": []
   },
   "time": {
-    "from": "now-24h",
+    "from": "now-6h",
     "to": "now"
   },
   "timepicker": {
@@ -1224,5 +1553,5 @@
   "timezone": "",
   "title": "Heizung",
   "uid": "s1S78yYiz",
-  "version": 7
+  "version": 8
 }
