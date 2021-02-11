@@ -35,5 +35,7 @@ jobs:
         platforms: linux/amd64,linux/arm/v7
         build-args: |
           GO_VERSION=${{ env.GO_VERSION }}
-        tags: "sfudeus/isg_exporter:${{ steps.revision.outputs.target-revision }}"
+        tags: |
+          "sfudeus/isg_exporter:${{ steps.revision.outputs.target-revision }}"
+          "sfudeus/isg_exporter:latest"
         push: true
