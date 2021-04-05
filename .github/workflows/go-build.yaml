@@ -14,13 +14,14 @@ jobs:
     strategy:
       matrix:
         go: [ '1.15', '1.16' ]
+    env:
+      CGO_ENABLED: "0"
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-go@v2
         with:
           go-version: ${{ matrix.go }}
-      - env:
-          CGO_ENABLED: "0"
-        run: |
-          go build -o isg_exporter
-          go test
+      - name: go build
+        run: go build -o isg_exporter
+      - name: go test
+        run: go test
