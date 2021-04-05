@@ -9,23 +9,18 @@ on:
     - master
 
 jobs:
-  build:
+  build_and_test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go: [1.15, 1.16]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-go@v2
         with:
-          go-version: '1.16'
+          go-version: ${{ matrix.node }}
       - env:
           CGO_ENABLED: "0"
-        run: go build -o isg_exporter
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-go@v2
-        with:
-          go-version: '1.16'
-      - env:
-          CGO_ENABLED: "0"
-        run: go test
+        run: |
+          go build -o isg_exporter
+          go test

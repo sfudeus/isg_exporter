@@ -62,3 +62,11 @@ A from-scratch docker image is automatically built for each new version and push
 ## Grafana
 
 A sample Grafana dashboard (using prometheus) can be found at `resources/grafana`.
+
+## Build
+
+Checkout the sources and run `go build` in the main directory. There are testcases which are run with `go test`.
+
+### Minimum go requirements
+
+Go 1.15 is required as a minimum.
