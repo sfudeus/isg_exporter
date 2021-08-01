@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/binary"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -16,6 +17,7 @@ import (
 	"github.com/headzoo/surf"
 	"github.com/headzoo/surf/browser"
 	"github.com/jessevdk/go-flags"
+	"github.com/pashi-corp/modbus"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -77,6 +79,29 @@ func main() {
 	if err != nil {
 		os.Exit(1)
 	}
+
+	// Modbus TCP
+	handler := modbus.NewTCPClientHandler(options.URL + ":502")
+	handler.SlaveId = 0x01
+
+	client := modbus.NewClient(handler)
+	results, err := client.ReadInputRegisters(0, 33)
+	if err != nil {
+		log.Println(err)
+		os.Exit(2)
+	}
+	for i := 0; i < len(results)-1; i += 2 {
+		log.Println(i/2+1, float32(int16(binary.BigEndian.Uint16(results[i:i+2])))/10)
+	}
+
+	results, err = client.ReadHoldingRegisters(1000, 27)
+	if err != nil {
+		log.Println(err)
+		os.Exit(2)
+	}
+	log.Println("1001:", results)
+
+	os.Exit(1)
 
 	validate()
 
