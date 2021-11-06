@@ -156,11 +156,13 @@ func gatherData() {
 		prepare()
 	}
 
-	parsePage("1,0", flagRemovalList)
-	parsePage("1,1", flagRemovalList)
-	parsePage("2,0", flagRemovalList)
-	parsePage("2,1", flagRemovalList)
-	parsePage("2,3", flagRemovalList)
+	parsePage("1,0", flagRemovalList) // Info->System
+	parsePage("1,1", flagRemovalList) // Info->HeatPump
+	parsePage("2,0", flagRemovalList) // Diagnosis->Status
+	parsePage("2,1", flagRemovalList) // Diagnosis->Commisioning
+	parsePage("2,3", flagRemovalList) // Diagnosis->Contractor
+	parsePage("2,4", flagRemovalList) // Diagnosis->ISG-Debug
+	parsePage("4,7", flagRemovalList) // Settings->EM-DEBUG-INFOS
 
 	for _, gauge := range flagRemovalList {
 		gauge.Set(0)
