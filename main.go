@@ -35,8 +35,8 @@ var options struct {
 	Password        string `long:"password" env:"ISG_PASSWORD" description:"password for ISG"`
 	BrowserRollover int64  `long:"browserRollover" default:"60" description:"number of iterations until the internal browser is recreated"`
 	SkipCircuit2    bool   `long:"skipCircuit2" description:"Toogle to skip data for circuit 2" env:"SKIP_CIRCUIT_2"`
-	//TODO: SkipCooling  bool   `long:"skipCooling" description:"Toggle to skip data for cooling" env:"SKIP_COOLING"`
-	Debug bool `long:"debug"`
+	Debug           bool   `long:"debug"`
+	// TODO: SkipCooling  bool   `long:"skipCooling" description:"Toggle to skip data for cooling" env:"SKIP_COOLING"`
 }
 
 var (
@@ -106,13 +106,13 @@ func main() {
 }
 
 func validate() {
-	if "" == options.URL {
+	if options.URL == "" {
 		log.Fatalln("Missing URL")
 	}
-	if "" == options.User {
+	if options.User == "" {
 		log.Fatalln("Missing username")
 	}
-	if "" == options.Password {
+	if options.Password == "" {
 		log.Fatalln("Missing password")
 	}
 }
@@ -184,7 +184,7 @@ func parsePage(page string, flagRemovalList map[string]prometheus.Gauge) {
 
 		label := normalizeLabel(key)
 
-		if strings.Index(label, "hk2") > -1 && options.SkipCircuit2 {
+		if strings.Contains(label, "hk2") && options.SkipCircuit2 {
 			return
 			/* TODO
 			} else if string.index(label, kuehlen) > -1 && options.SkipCooling {
