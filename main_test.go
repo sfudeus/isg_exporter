@@ -74,4 +74,8 @@ func TestNormalizeLabel(t *testing.T) {
 	if res != "ww_solltemp" {
 		t.Errorf("Expected ww_solltemp, but got %s", res)
 	}
+	res = normalizeLabel("M*1E6")
+	if res != "m1e6" {
+		t.Errorf("Expected m1e6, but got %s", res)
+	}
 }

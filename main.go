@@ -159,7 +159,7 @@ func gatherData() {
 	parsePage("1,0", flagRemovalList) // Info->System
 	parsePage("1,1", flagRemovalList) // Info->HeatPump
 	parsePage("2,0", flagRemovalList) // Diagnosis->Status
-	parsePage("2,1", flagRemovalList) // Diagnosis->Commisioning
+	parsePage("2,1", flagRemovalList) // Diagnosis->Commissioning
 	parsePage("2,3", flagRemovalList) // Diagnosis->Contractor
 	parsePage("2,4", flagRemovalList) // Diagnosis->ISG-Debug
 	parsePage("4,7", flagRemovalList) // Settings->EM-DEBUG-INFOS
@@ -231,7 +231,7 @@ func normalizeLabel(s string) string {
 		case (r == ' ' || r == '-' || r == '/'):
 			// canonical separator "_"
 			return '_'
-		case r == '.' || r == '(' || r == ')':
+		case r == '.' || r == '(' || r == ')' || r == '*':
 			// ignore other special characters or abbreviation signals
 			return -1
 		}
@@ -249,7 +249,7 @@ func normalizeLabel(s string) string {
 }
 
 func normalizeValue(s string) IsgValue {
-	re := regexp.MustCompile(`(?P<value>[0-9,.-]+)( ?)(?P<unit>[a-zA-Z°%/²³]*)`)
+	re := regexp.MustCompile(`(?P<value>[0-9,.-]+)( ?)(?P<unit>[a-zA-Z°%/²³.]*)`)
 	matches := re.FindStringSubmatch(s)
 	// ISG exports numbers with decimal separator ",", even with language setting english
 	// needs to be converted to be parsed as float
