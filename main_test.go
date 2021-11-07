@@ -1,7 +1,15 @@
 package main
 
 import (
+	"encoding/json"
+	"fmt"
+	"net/http"
+	"os"
 	"testing"
+
+	"net/http/httptest"
+
+	"github.com/prometheus/client_golang/prometheus"
 )
 
 func TestNormalizeValue(t *testing.T) {
@@ -78,4 +86,47 @@ func TestNormalizeLabel(t *testing.T) {
 	if res != "m1e6" {
 		t.Errorf("Expected m1e6, but got %s", res)
 	}
+}
+
+func TestPage(t *testing.T) {
+
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+		page := req.URL.Query().Get("s")
+
+		if page == "1,0" {
+			content, err := os.ReadFile("test_resources/sample_1_0.html")
+			if err != nil {
+				t.Errorf("Failed delivering sample for 1,0")
+			}
+			fmt.Fprint(w, string(content))
+		} else if page == "1,1" {
+			content, err := os.ReadFile("test_resources/sample_1_1.html")
+			if err != nil {
+				t.Errorf("Failed delivering sample for 1,1")
+			}
+			fmt.Fprint(w, string(content))
+		} else if page == "4,7" {
+			content, err := os.ReadFile("test_resources/sample_4_7.html")
+			if err != nil {
+				t.Errorf("Failed delivering sample for 4,7")
+			}
+			fmt.Fprint(w, string(content))
+		} else {
+			fmt.Fprint(w, "")
+		}
+	}))
+	defer ts.Close()
+
+	options.URL = ts.URL
+	gaugesMap = make(map[string]prometheus.Gauge)
+	flagGaugesMap = make(map[string]prometheus.Gauge)
+	valuesMap = make(map[string]IsgValue)
+	prepare()
+
+	flagRemovalList := make(map[string]prometheus.Gauge)
+	parsePage("1,1", flagRemovalList)
+	parsePage("4,7", flagRemovalList)
+
+	json, _ := json.Marshal(valuesMap)
+	fmt.Println(string(json))
 }
