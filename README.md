@@ -69,4 +69,4 @@ Checkout the sources and run `go build` in the main directory. There are testcas
 
 ### Minimum go requirements
 
-Go 1.15 is required as a minimum.
+Go 1.16 is required as a minimum.
