@@ -1,0 +1,177 @@
+
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="de">
+<head>
+	<title>STIEBEL ELTRON Reglersteuerung</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta http-equiv="imagetoolbar" content="no" />
+	<meta name="content-language" content="de" />
+	<meta name="robots" content="noindex,nofollow" />
+	<meta name="keywords" content="" />
+	<meta name="description" content="" />
+
+  <link rel="shortcut icon" href="./pics/brlogo.ico">
+  <!-- does not exist link rel="stylesheet" href="./css/netzwerk.css" type="text/css" media="all" /-->
+  <link rel="stylesheet" type="text/css" href="./css/slider/ste_slider.css" />
+	<!-- Blueprint CSS framework -->
+	<link rel="stylesheet" href="./css/blueprint/screen.css" type="text/css" media="screen, projection" />
+	<link rel="stylesheet" href="./css/blueprint/print.css" type="text/css" media="print" />
+	<!--[if lt IE 8]><link rel="stylesheet" href="./css/blueprint/ie.css" type="text/css" media="screen, projection" /><![endif]-->
+
+	<link rel="stylesheet" href="./css/layout.css" type="text/css" media="all" />
+
+	<link rel="stylesheet" href="./css/sifr.css" type="text/css" media="all" />
+	<link rel="stylesheet" href="./css/thickbox.css" type="text/css" media="all" />
+
+	<link rel="stylesheet" type="text/css" href="./css/jquery.jqplot.min.css" />
+
+		<link rel="stylesheet" type="text/css" href="./css/mac.css" media="all" />
+
+
+	<script type="text/javascript" src="./js/jquery.min.js"></script>
+	<script type="text/javascript" src="./js/thickbox.js"></script>
+	<script type="text/javascript" src="./js/sifr.js"></script>
+	<script type="text/javascript" src="./js/sifr_sw.js"></script>
+	<script type="text/javascript" src="./js/scripts.js"></script>
+  <script type="text/javascript" src="./js/json2.js"></script>
+  <script type="text/javascript" src="./js/plugins/jquery-ui-1.8.6.custom.min.js"></script>
+    <script type="text/javascript" src="./js/setDNS1.js"></script>
+
+	<!-- [if IE] -->
+	<script language="javascript" type="text/javascript" src="./js/excanvas.min.js"></script>
+	<!-- [endif] -->
+
+	<!-- for dateAxisRenderer.js -->
+	<script language="javascript" type="text/javascript" src="./js/plugins/Date.min.js"></script>
+	<!-- BEGIN: load jqplot -->
+	<script language="javascript" type="text/javascript" src="./js/jquery.jqplot.min.js"></script>
+	<script language="javascript" type="text/javascript" src="./js/plugins/jqplot.dateAxisRenderer.js"></script>
+	<script language="javascript" type="text/javascript" src="./js/plugins/jqplot.barRenderer.js"></script>
+	<script language="javascript" type="text/javascript" src="./js/plugins/jqplot.categoryAxisRenderer.js"></script>
+	<!-- END: load jqplot -->
+
+  <!-- BEGIN: load slider -->
+	<script language="javascript" type="text/javascript" src="./js/plugins/slider/jquery.ui.core.js"></script>
+	<script language="javascript" type="text/javascript" src="./js/plugins/slider/jquery.ui.widget.js"></script>
+	<script language="javascript" type="text/javascript" src="./js/plugins/slider/jquery.ui.mouse.js"></script>
+	<script language="javascript" type="text/javascript" src="./js/plugins/slider/jquery.ui.slider.js"></script>
+	<!-- END: load slider -->
+
+
+  <!-- BEGIN: Uhrzeit -->
+  <script language="javascript" type="text/javascript">
+var timestampunterschied = 1636323203 * 1000 - new Date().getTime();
+</script>
+<script src="./js/uhrzeit.js" type="text/javascript" language="javascript"></script>
+  <!-- END:  Uhrzeit -->
+
+</head>
+<body>
+<div id="header">
+	<div class="head curdef">
+		<div id="meta">
+			<div id="login">
+      			</div>
+		</div>
+    <div class="eingestelle_sprache"><strong><a href="?s=" style="color:white">DEUTSCH</a></strong></div>
+    <div id="Uhrzeit"></div>
+		<div class="title">
+      <a href="." onclick="return checkChanges(this);" title="zur Startseite">
+        <img src="./pics/title.png" alt="Servicewelt" />
+
+      </a>
+            <div style="position: relative; color: #97B765; font-weight: 900; margin: 18px 0px 0px 323px;"></div>
+          </div>
+		<div class="logo"><a href="." onclick="return checkChanges(this);" title="zur Startseite" class="home_link">&nbsp;</a></div>
+	</div>
+</div>
+
+
+<div id="main" class="login">
+	  <form id="werte" method="POST">
+		  <div id="content">
+      	<div class="span-24 last">
+      		<div id="loginscreen">
+      			<input type="hidden" name="make" value="send" />
+      			      			<h2 class="green">Login</h2>
+      			<p class="nothing">
+      				Benutzername:<br />
+      				<input type="text" name="user" />
+      			</p>
+      			<p class="nothing">
+      				Passwort:<br />
+      				<input type="password" name="pass" />
+      			</p>
+      		  <div class="button right"  onclick="document.forms['werte'].submit();"><div class="bg_r">&nbsp;</div><a>Einloggen</a></div>      		</div>
+      	</div>
+      	<div class="span-24 last"><p>&nbsp;<br /></p></div>
+      </div>
+	  </form>
+	</div>
+    </div>  </form></div>
+</div>
+</div>
+</div>
+<div id="footer">
+	<!--[if IE]>
+	<style type="text/css">
+	#footer
+{
+
+		height:260px;
+}
+	#versionsNummer
+	{
+		position:relative;
+		top:-33px;
+	}
+	</style>
+
+     	<![endif]-->
+	<div class="span-24 last footer_middle curdef">
+
+		<div class="span-8 prepend-top" style="height:145px">
+						<div class="span-3">
+
+				<img src="./pics/ste_footer_website.png" />
+			</div>
+			<div class="span-5 last">
+				<p>
+
+          					Weitere Informationen zu unserem Produktprogramm und aktuelle Serviceangebote finden Sie unter					<a href="http://www.stiebel-eltron.de" target="_blank" class="extern">www.stiebel-eltron.de</a>
+				</p>
+			</div>
+					</div>
+
+    		<div class="bordered span-1"></div>
+		<div class="span-6 prepend-top">
+			<div class="span-2">
+			  <img src="./pics/footer_tel.png" />
+			</div>
+			<div class="span-4 last">
+				<p>
+					Unsere Service-Hotline erreichen Sie unter<br /><span class="big">05531 702-111</span>
+				</p>
+			</div>
+	  </div>
+    		<div class="bordered span-1"></div>
+		<div class="span-7 prepend-top last">
+			<p>
+				Das Neueste rund um die Servicewelt				<br /><a href="http://www.stiebel-eltron.de/erneuerbare-energien/kundenservice/servicewelt/isg/" target="_blank" class="extern">servicewelt</a>
+			</p>
+	  </div>
+
+	</div>
+  <div class="links span-23 prepend-top append-1 last footer_middle">
+    <div class="span-17">
+      &nbsp;
+      <p style="margin-top:8px" class="right" id="versionsNummer"></p>
+    </div>
+  	<div class="copyright span-6 last curdef">
+  		&copy; STIEBEL ELTRON 2020
+  	</div>
+  </div>
+</div>
+</body>
+</html>
