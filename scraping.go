@@ -1,48 +1,75 @@
 package main
 
 import (
-	"log"
 	"regexp"
 	"strconv"
 	"strings"
 
+	log "github.com/sirupsen/logrus"
+
 	"github.com/PuerkitoBio/goquery"
 	"github.com/headzoo/surf"
+	"github.com/headzoo/surf/browser"
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
+)
+
+var (
+	// map of only the flag gauges
+	flagGaugesMap map[string]prometheus.Gauge
+)
+
+var (
+	bow                 *browser.Browser
+	browserUsageCounter int64
+
+	loginDuration = promauto.NewSummary(prometheus.SummaryOpts{
+		Namespace: "isg",
+		Name:      "loginduration",
+		Help:      "The duration of login",
+	})
 )
 
 func prepareScraping() {
 
+	flagGaugesMap = make(map[string]prometheus.Gauge)
+
 	timer := prometheus.NewTimer(loginDuration)
 	defer timer.ObserveDuration()
 
-	log.Println("Performing Login for ISG")
+	log.Info("Performing Login for ISG")
 
 	bow = surf.NewBrowser()
 	err := bow.Open(options.URL + "?s=1,0")
 	if err != nil {
-		log.Panicln(err)
+		log.Fatal(err)
 	}
 	browserUsageCounter = 1
 
 	fm, err := bow.Form("form#werte")
 	if err != nil {
-		log.Panicln(err)
+		log.Fatal(err)
 	}
 	fm.Input("user", options.User)
 	fm.Input("pass", options.Password)
 	err = fm.Submit()
 	if err != nil {
-		log.Panicln(err)
+		log.Fatal(err)
 	}
 }
 
-func gatherScrapingData(flagRemovalList map[string]prometheus.Gauge) {
+func gatherScrapingData() {
 
 	if browserUsageCounter > options.BrowserRollover {
-		log.Println("Redo prepare because of browser rollover")
+		log.Info("Redo prepare because of browser rollover")
 		prepare()
 	}
+
+	flagRemovalList := make(map[string]prometheus.Gauge)
+	for key, gauge := range flagGaugesMap {
+		flagRemovalList[key] = gauge
+	}
+
 	parsePage("1,0", flagRemovalList) // Info->System
 	parsePage("1,1", flagRemovalList) // Info->HeatPump
 	parsePage("2,0", flagRemovalList) // Diagnosis->Status
@@ -51,6 +78,9 @@ func gatherScrapingData(flagRemovalList map[string]prometheus.Gauge) {
 	parsePage("2,4", flagRemovalList) // Diagnosis->ISG-Debug
 	parsePage("4,7", flagRemovalList) // Settings->EM-DEBUG-INFOS
 
+	for _, gauge := range flagRemovalList {
+		gauge.Set(0)
+	}
 }
 
 func parsePage(page string, flagRemovalList map[string]prometheus.Gauge) {
@@ -58,7 +88,7 @@ func parsePage(page string, flagRemovalList map[string]prometheus.Gauge) {
 	err := bow.Open(options.URL + "?s=" + page)
 	browserUsageCounter++
 	if err != nil {
-		log.Println("Redo prepare because of error: " + err.Error())
+		log.Info("Redo prepare because of error: " + err.Error())
 		prepareScraping()
 	}
 
@@ -78,11 +108,11 @@ func parsePage(page string, flagRemovalList map[string]prometheus.Gauge) {
 
 		if value != "" {
 			isgValue := normalizeValue(value)
-			valuesMap[label] = isgValue
-			createOrRetrieve(label, isgValue.Unit).Set(isgValue.Value)
+			valuesMap[label] = append(valuesMap[label], isgValue)
+			createOrRetrieve(label, isgValue.Unit, nil).Set(isgValue.Value)
 		} else {
 			label = "flag_" + label
-			flagGauge := createOrRetrieve(label, "")
+			flagGauge := createOrRetrieve(label, "", nil)
 			flagGauge.Set(1)
 			flagGaugesMap[label] = flagGauge
 			delete(flagRemovalList, label)
@@ -121,7 +151,7 @@ func normalizeValue(s string) IsgValue {
 	unit := ""
 	float, err := strconv.ParseFloat(value, 64)
 	if err != nil {
-		log.Panicln("Failed to parse value " + value)
+		log.Fatalf("Failed to parse value %s", value)
 	}
 
 	if len(matches) > 2 {

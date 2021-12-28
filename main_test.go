@@ -90,6 +90,7 @@ func TestNormalizeLabel(t *testing.T) {
 
 func TestPage(t *testing.T) {
 
+	options.ScrapingMode = MODE_WEBSCRAPING
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 		page := req.URL.Query().Get("s")
 
@@ -118,9 +119,9 @@ func TestPage(t *testing.T) {
 	defer ts.Close()
 
 	options.URL = ts.URL
-	gaugesMap = make(map[string]prometheus.Gauge)
+	gaugesMap = make(map[string]*prometheus.GaugeVec)
 	flagGaugesMap = make(map[string]prometheus.Gauge)
-	valuesMap = make(map[string]IsgValue)
+	valuesMap = make(map[string][]IsgValue)
 	prepare()
 
 	flagRemovalList := make(map[string]prometheus.Gauge)

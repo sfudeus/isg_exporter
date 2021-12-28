@@ -3,25 +3,17 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"net/http/pprof"
-	"os"
+	"strings"
 	"time"
 
-	"github.com/headzoo/surf/browser"
 	"github.com/jessevdk/go-flags"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
-
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	log "github.com/sirupsen/logrus"
 )
-
-// IsgValue is a wrapper for a single data value with its unit
-type IsgValue struct {
-	Value float64
-	Unit  string
-}
 
 var options struct {
 	Port            int64  `long:"port" default:"8080" description:"The address to listen on for HTTP requests." env:"EXPORTER_PORT"`
@@ -31,26 +23,18 @@ var options struct {
 	Password        string `long:"password" env:"ISG_PASSWORD" description:"password for ISG"`
 	BrowserRollover int64  `long:"browserRollover" default:"60" description:"number of iterations until the internal browser is recreated"`
 	SkipCircuit2    bool   `long:"skipCircuit2" description:"Toogle to skip data for circuit 2" env:"SKIP_CIRCUIT_2"`
-	UseModbus       bool   `long:"modbus" description:"Use modbus communication, web scraping otherwise"`
 	Debug           bool   `long:"debug"`
+	Loglevel        string `long:"loglevel" default:"warn"`
+	ScrapingMode    string `long:"mode" default:"webscraping" description:"Gathering mode (webscraping|modbus)"`
 	// TODO: SkipCooling  bool   `long:"skipCooling" description:"Toggle to skip data for cooling" env:"SKIP_COOLING"`
 }
 
-var (
-	valuesMap map[string]IsgValue
+const (
+	MODE_MODBUS      string = "modbus"
+	MODE_WEBSCRAPING string = "webscraping"
 )
 
 var (
-	bow                 *browser.Browser
-	browserUsageCounter int64
-)
-
-var (
-	loginDuration = promauto.NewSummary(prometheus.SummaryOpts{
-		Namespace: "isg",
-		Name:      "loginduration",
-		Help:      "The duration of login",
-	})
 	gatheringDuration = promauto.NewSummary(prometheus.SummaryOpts{
 		Namespace: "isg",
 		Name:      "gatheringduration",
@@ -63,23 +47,37 @@ var (
 	})
 
 	// map of all gauges (normal and flags)
-	gaugesMap map[string]prometheus.Gauge
-
-	// map of only the flag gauges
-	flagGaugesMap map[string]prometheus.Gauge
+	gaugesMap map[string]*prometheus.GaugeVec
+	valuesMap map[string][]IsgValue
 )
+
+// IsgValue is a wrapper for a single data value with its unit
+type IsgValue struct {
+	Value  float64
+	Unit   string            `json:",omitempty"`
+	Labels map[string]string `json:",omitempty"`
+}
 
 func main() {
 	_, err := flags.Parse(&options)
 	if err != nil {
-		os.Exit(1)
+		log.Fatal("Failed parsing arguments", err)
 	}
+
+	if options.Debug {
+		log.SetLevel(log.DebugLevel)
+	}
+
+	level, err := log.ParseLevel(options.Loglevel)
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.SetLevel(level)
 
 	validate()
 
-	gaugesMap = make(map[string]prometheus.Gauge)
-	flagGaugesMap = make(map[string]prometheus.Gauge)
-	valuesMap = make(map[string]IsgValue)
+	gaugesMap = make(map[string]*prometheus.GaugeVec)
+	valuesMap = make(map[string][]IsgValue)
 
 	prepare()
 
@@ -87,9 +85,7 @@ func main() {
 		for {
 			gatherData()
 			time.Sleep(time.Duration(options.Interval) * time.Second)
-			if options.Debug {
-				log.Println(valuesMap)
-			}
+			log.Debug(valuesMap)
 		}
 	}()
 
@@ -104,66 +100,79 @@ func main() {
 
 func validate() {
 	if options.URL == "" {
-		log.Fatalln("Missing URL")
+		log.Fatal("Missing URL")
 	}
-	if !options.UseModbus {
-		// No credentials for modbus
+	switch options.ScrapingMode {
+	case MODE_MODBUS:
+	case MODE_WEBSCRAPING:
+		// Credentials only for webscraping
 		if options.User == "" {
-			log.Fatalln("Missing username")
+			log.Fatal("Missing username")
 		}
 		if options.Password == "" {
-			log.Fatalln("Missing password")
+			log.Fatal("Missing password")
 		}
+	default:
+		log.Fatalf("Unknown scraping mode %s", options.ScrapingMode)
 	}
 }
 
 func prepare() {
 
-	if options.UseModbus {
+	switch options.ScrapingMode {
+	case MODE_MODBUS:
 		prepareModbus()
-	} else {
+	case MODE_WEBSCRAPING:
 		prepareScraping()
 	}
-
 }
 
 func gatherData() {
 	timer := prometheus.NewTimer(gatheringDuration)
 	defer timer.ObserveDuration()
 
-	flagRemovalList := make(map[string]prometheus.Gauge)
-	for key, gauge := range flagGaugesMap {
-		flagRemovalList[key] = gauge
-	}
-
-	if options.UseModbus {
-		gatherModbusData(flagRemovalList)
-	} else {
-		gatherScrapingData(flagRemovalList)
-	}
-
-	for _, gauge := range flagRemovalList {
-		gauge.Set(0)
+	switch options.ScrapingMode {
+	case MODE_MODBUS:
+		gatherModbusData()
+	case MODE_WEBSCRAPING:
+		gatherScrapingData()
 	}
 }
 
-func createOrRetrieve(label string, unit string) prometheus.Gauge {
-	val, exists := gaugesMap[label]
+func createOrRetrieve(name string, unit string, labels map[string]string) prometheus.Gauge {
+	val, exists := gaugesMap[name]
+	labelKeys := make([]string, 0, len(labels))
+	labelValues := make([]string, 0, len(labels))
+
+	if len(unit) > 0 {
+		labelKeys = append(labelKeys, "unit")
+		labelValues = append(labelValues, unit)
+	}
+
+	for k, v := range labels {
+		labelKeys = append(labelKeys, k)
+		labelValues = append(labelValues, v)
+	}
+
 	if !exists {
 		help := ""
 		if len(unit) > 0 {
-			help = "Metric " + label + " in " + unit
+			help = "Metric " + name + " in " + unit
 		} else {
-			help = "Metric " + label
+			help = "Metric " + name
 		}
-		val = promauto.NewGauge(prometheus.GaugeOpts{
-			Namespace: "isg",
-			Name:      label,
-			Help:      help,
-		})
-		gaugesMap[label] = val
+
+		val = promauto.NewGaugeVec(
+			prometheus.GaugeOpts{
+				Namespace: "isg",
+				Name:      strings.ToLower(name),
+				Help:      help,
+			},
+			labelKeys)
+
+		gaugesMap[name] = val
 	}
-	return val
+	return val.WithLabelValues(labelValues...)
 }
 
 func getData(w http.ResponseWriter, r *http.Request) {
