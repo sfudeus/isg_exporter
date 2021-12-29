@@ -147,9 +147,15 @@ func processModbusRegister(block ModbusConfigBlock, results []byte) {
 			if labels == nil {
 				labels = make(map[string]string)
 			}
-			labels["name"] = strings.ToLower(element.Mapping[int(rawValue)])
-			createOrRetrieve(element.Name, element.Unit, labels).Set(1)
-			valuesMap[element.Name+"."+labels["name"]] = append(valuesMap[element.Name+"."+labels["name"]], IsgValue{Value: 1})
+			for mappingKey, mappingName := range element.Mapping {
+				labels["name"] = strings.ToLower(mappingName)
+				status := 0
+				if mappingKey == int(rawValue) {
+					status = 1
+				}
+				createOrRetrieve(element.Name, element.Unit, labels).Set(float64(status))
+				valuesMap[element.Name+"."+labels["name"]] = append(valuesMap[element.Name+"."+labels["name"]], IsgValue{Value: 1})
+			}
 		case BITVECTOR:
 			log.Infof("%s:", element.Name)
 			log.Debugf("results[0]: %b", results[0])
