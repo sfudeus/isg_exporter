@@ -90,7 +90,7 @@ func TestNormalizeLabel(t *testing.T) {
 
 func TestPage(t *testing.T) {
 
-	options.ScrapingMode = MODE_WEBSCRAPING
+	options.Mode = MODE_WEBSCRAPING
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 		page := req.URL.Query().Get("s")
 

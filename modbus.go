@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/binary"
+	"fmt"
 	"io/ioutil"
 	"math"
 	"strings"
@@ -18,6 +19,7 @@ type ModbusConfig struct {
 const (
 	INPUT_REGISTER   string = "INPUT_REGISTER"
 	HOLDING_REGISTER string = "HOLDING_REGISTER"
+	MODBUS_PORT      int    = 502
 )
 
 const (
@@ -67,8 +69,8 @@ func prepareModbus() {
 
 	// Modbus TCP
 	modbusHostname := strings.TrimPrefix(options.URL, "http://")
-	handler := modbus.NewTCPClientHandler(modbusHostname + ":502")
-	handler.SlaveId = 0x01
+	handler := modbus.NewTCPClientHandler(modbusHostname + ":" + fmt.Sprint(MODBUS_PORT))
+	handler.SlaveId = byte(options.ModbusSlaveId)
 
 	client = modbus.NewClient(handler)
 }

@@ -25,7 +25,9 @@ var options struct {
 	SkipCircuit2    bool   `long:"skipCircuit2" description:"Toogle to skip data for circuit 2" env:"SKIP_CIRCUIT_2"`
 	Debug           bool   `long:"debug"`
 	Loglevel        string `long:"loglevel" default:"warn"`
-	ScrapingMode    string `long:"mode" default:"webscraping" description:"Gathering mode (webscraping|modbus)"`
+	Mode            string `long:"mode" default:"webscraping" description:"Gathering mode (webscraping|modbus)"`
+	ModbusSlaveId   int64  `long:"modbusSlaveId" default:"1"`
+
 	// TODO: SkipCooling  bool   `long:"skipCooling" description:"Toggle to skip data for cooling" env:"SKIP_COOLING"`
 }
 
@@ -102,7 +104,7 @@ func validate() {
 	if options.URL == "" {
 		log.Fatal("Missing URL")
 	}
-	switch options.ScrapingMode {
+	switch options.Mode {
 	case MODE_MODBUS:
 	case MODE_WEBSCRAPING:
 		// Credentials only for webscraping
@@ -113,13 +115,13 @@ func validate() {
 			log.Fatal("Missing password")
 		}
 	default:
-		log.Fatalf("Unknown scraping mode %s", options.ScrapingMode)
+		log.Fatalf("Unknown scraping mode %s", options.Mode)
 	}
 }
 
 func prepare() {
 
-	switch options.ScrapingMode {
+	switch options.Mode {
 	case MODE_MODBUS:
 		prepareModbus()
 	case MODE_WEBSCRAPING:
@@ -131,7 +133,7 @@ func gatherData() {
 	timer := prometheus.NewTimer(gatheringDuration)
 	defer timer.ObserveDuration()
 
-	switch options.ScrapingMode {
+	switch options.Mode {
 	case MODE_MODBUS:
 		gatherModbusData()
 	case MODE_WEBSCRAPING:
