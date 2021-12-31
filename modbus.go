@@ -77,6 +77,8 @@ func prepareModbus() {
 
 func gatherModbusData() {
 
+	newValuesMap := make(map[string][]IsgValue)
+
 	for _, block := range modbusConfig.Lwz {
 		switch block.Type {
 		case INPUT_REGISTER:
@@ -85,21 +87,23 @@ func gatherModbusData() {
 			if err != nil {
 				log.Fatal(err)
 			}
-			processModbusRegister(block, results)
+			processModbusRegister(block, results, newValuesMap)
 		case HOLDING_REGISTER:
 			log.Printf("Reading holding registers from %d for %d entries", block.Offset, block.Entries)
 			results, err := client.ReadHoldingRegisters(block.Offset, block.Entries)
 			if err != nil {
 				log.Fatal(err)
 			}
-			processModbusRegister(block, results)
+			processModbusRegister(block, results, newValuesMap)
 		default:
 			log.Warnf("Did not recognize type of block %s, skipping", block.Type)
 		}
 	}
+
+	valuesMap = newValuesMap
 }
 
-func processModbusRegister(block ModbusConfigBlock, results []byte) {
+func processModbusRegister(block ModbusConfigBlock, results []byte, newValuesMap map[string][]IsgValue) {
 	for _, element := range block.Data {
 		resultIndex := (element.Address - 1) * 2
 		rawValue := float64(binary.BigEndian.Uint16(results[resultIndex : resultIndex+2]))
@@ -131,16 +135,16 @@ func processModbusRegister(block ModbusConfigBlock, results []byte) {
 			processedValue := float64(rawValue) / 10
 			log.Infof("%s: %.1f %s", element.Name, processedValue, element.Unit)
 			createOrRetrieve(element.Name, element.Unit, element.Labels).Set(processedValue)
-			valuesMap[element.Name] = append(valuesMap[element.Name], IsgValue{Value: processedValue, Unit: element.Unit, Labels: element.Labels})
+			newValuesMap[element.Name] = append(newValuesMap[element.Name], IsgValue{Value: processedValue, Unit: element.Unit, Labels: element.Labels})
 		case TYPE_6:
 			log.Infof("%s: %.0f %s", element.Name, rawValue, element.Unit)
 			createOrRetrieve(element.Name, element.Unit, element.Labels).Set(float64(rawValue))
-			valuesMap[element.Name] = append(valuesMap[element.Name], IsgValue{Value: rawValue, Unit: element.Unit, Labels: element.Labels})
+			newValuesMap[element.Name] = append(newValuesMap[element.Name], IsgValue{Value: rawValue, Unit: element.Unit, Labels: element.Labels})
 		case TYPE_7:
 			processedValue := float64(rawValue) / 100
 			log.Infof("%s: %.2f %s", element.Name, processedValue, element.Unit)
 			createOrRetrieve(element.Name, element.Unit, element.Labels).Set(processedValue)
-			valuesMap[element.Name] = append(valuesMap[element.Name], IsgValue{Value: processedValue, Unit: element.Unit, Labels: element.Labels})
+			newValuesMap[element.Name] = append(newValuesMap[element.Name], IsgValue{Value: processedValue, Unit: element.Unit, Labels: element.Labels})
 		case TYPE_8:
 			log.Infof("%s: %s", element.Name, element.Mapping[int(rawValue)])
 			labels := element.Labels
@@ -154,7 +158,7 @@ func processModbusRegister(block ModbusConfigBlock, results []byte) {
 					status = 1
 				}
 				createOrRetrieve(element.Name, element.Unit, labels).Set(float64(status))
-				valuesMap[element.Name+"."+labels["name"]] = append(valuesMap[element.Name+"."+labels["name"]], IsgValue{Value: 1})
+				newValuesMap[element.Name+"."+labels["name"]] = append(newValuesMap[element.Name+"."+labels["name"]], IsgValue{Value: 1})
 			}
 		case BITVECTOR:
 			log.Infof("%s:", element.Name)
@@ -173,7 +177,7 @@ func processModbusRegister(block ModbusConfigBlock, results []byte) {
 				}
 				labels["name"] = strings.ToLower(name)
 				createOrRetrieve("flag", "", labels).Set(float64(value))
-				valuesMap[element.Name+"."+labels["name"]] = append(valuesMap[element.Name+"."+labels["name"]], IsgValue{Value: 1})
+				newValuesMap[element.Name+"."+labels["name"]] = append(newValuesMap[element.Name+"."+labels["name"]], IsgValue{Value: 1})
 			}
 		default:
 			log.Warnf("%s: Unrecognized type %d", element.Name, element.Type)
