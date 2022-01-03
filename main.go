@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/pprof"
+	"os"
 	"strings"
 	"time"
 
@@ -24,10 +25,9 @@ var options struct {
 	BrowserRollover int64  `long:"browserRollover" default:"60" description:"number of iterations until the internal browser is recreated"`
 	SkipCircuit2    bool   `long:"skipCircuit2" description:"Toogle to skip data for circuit 2" env:"SKIP_CIRCUIT_2"`
 	Debug           bool   `long:"debug"`
-	Loglevel        string `long:"loglevel" default:"warn"`
+	Loglevel        string `long:"loglevel" default:"warn" description:"logLevel (trace,debug,info,warn(ing),error,fatal,panic)"`
 	Mode            string `long:"mode" default:"webscraping" description:"Gathering mode (webscraping|modbus)"`
-	ModbusSlaveId   int64  `long:"modbusSlaveId" default:"1"`
-
+	ModbusSlaveId   int64  `long:"modbusSlaveId" default:"1" description:"slaveId to use for modbus communication"`
 	// TODO: SkipCooling  bool   `long:"skipCooling" description:"Toggle to skip data for cooling" env:"SKIP_COOLING"`
 }
 
@@ -63,7 +63,7 @@ type IsgValue struct {
 func main() {
 	_, err := flags.Parse(&options)
 	if err != nil {
-		log.Fatal("Failed parsing arguments", err)
+		os.Exit(1)
 	}
 
 	if options.Debug {

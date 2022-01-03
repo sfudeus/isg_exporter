@@ -5,32 +5,45 @@ A simple tool to extract relevant status data from the Internet Service Gateway 
 `isg_exporter` is written in go and provided as a single binary.
 
 `isg_exporter` will listen on a freely defineable port and emit data in prometheus format at `/metrics` which is periodically fetched from your ISG by scraping the web interface.
-Acccess credentials can be configured as either cli parameters or environment parameters.
+Acccess credentials can be configured as either cli parameters or environment variables.
 
 ## Usage
 
 ```bash
-> $ ./isg_exporter --help
-
 Usage:
   isg_exporter [OPTIONS]
 
 Application Options:
-      --port=         The address to listen on for HTTP requests. (default: 8080) [$EXPORTER_PORT]
-      --interval=     The frequency in seconds in which to gather data (default: 60) [$INTERVAL]
-      --url=          URL for ISG [$ISG_URL]
-      --user=         username for ISG [$ISG_USER]
-      --password=     password for ISG [$ISG_PASSWORD]
-      --skipCircuit2  Toogle to skip data for circuit 2 [$SKIP_CIRCUIT_2]
+      --port=            The address to listen on for HTTP requests. (default: 8080) [$EXPORTER_PORT]
+      --interval=        The frequency in seconds in which to gather data (default: 60) [$INTERVAL]
+      --url=             URL for ISG [$ISG_URL]
+      --user=            username for ISG [$ISG_USER]
+      --password=        password for ISG [$ISG_PASSWORD]
+      --browserRollover= number of iterations until the internal browser is recreated (default: 60)
+      --skipCircuit2     Toogle to skip data for circuit 2 [$SKIP_CIRCUIT_2]
       --debug
+      --loglevel=        logLevel (trace,debug,info,warn(ing),error,fatal,panic) (default: warn)
+      --mode=            Gathering mode (webscraping|modbus) (default: webscraping)
+      --modbusSlaveId=   slaveId to use for modbus communication (default: 1)
 
 Help Options:
-  -h, --help          Show this help message
+  -h, --help             Show this help message
 ```
+
+## Gathering "engines"
+
+This exporter currently support two distinctively different modes to gather data from the ISG.
+One (originally implemented) is about logging interactively into the web interface and scraping the different HTML pages and extracting data there. It makes available exactly those metrics which are available in the web frontend.
+
+Later on, the ISG received a modbus implementation. The modbus gathering mode exposes all metrics available via Modbus - funnily, the available data on both interfaces is not the same and not with the same granularity. And this is not only about non-relevant data like the logged-in user.
+
+You can find more infos on the distinction [here](SCRAPING_MODBUS.md).
+
+You can choose the gathering mode by using the `--mode` switch. Default is `webscraping` for now.
 
 ## Metrics
 
-Metric names are based on __the configured language in the ISG__ and normalized, sample names for a german instance are:
+For the webscraping mode, metric names are based on __the configured language in the ISG__ and normalized, sample names for a german instance are:
 
 * `isg_verdichter_ww`
 * `isg_verdichter_heizen`
@@ -47,13 +60,15 @@ Examples:
 
 Metrics for circuit 2 can be skipped (e.g. when not in use to reduce number of metrics) by providing `--skipCircuit2` on the command line.
 
+For the modbus mode, metric names are based on explicitly defined names in a configuration file. A [default config](modbus-mapping.yaml) is packaged in the Docker image.
+
 ## RESTFul status
 
 So far, `isg_exporter` support a single additional restful `/status` endpoint, which provides all data in a JSON format. Eventually, it might support more interactions with the ISG and might be able to reconfigure ISG params.
 
 ## Systemd
 
-When using systemd, a sample unit file is provided in resources/systemd. This refers to an installation of the single go binary in /usr/local/bin. Environment is configured to be configured in `/etc/default/isg_exporter`.
+When using systemd, a sample unit file is provided in `resources/systemd`. This refers to an installation of the single go binary in /usr/local/bin. Environment is configured to be configured in `/etc/default/isg_exporter`.
 
 ## Docker
 
@@ -61,7 +76,7 @@ A from-scratch docker image is automatically built for each new version and push
 
 ## Grafana
 
-A sample Grafana dashboard (using prometheus) can be found at `resources/grafana`.
+Sample Grafana dashboards (using prometheus, with and without modbus) can be found at `resources/grafana`.
 
 ## Build
 

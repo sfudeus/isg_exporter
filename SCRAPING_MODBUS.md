@@ -24,6 +24,7 @@ So Modbus is meant to be the "stable" interface / stable parsing mode.
   * Current operating mode
 
 ## Benefits of the webscraping mode
+
 * Available metrics<br>
   The webinterface contains a bunch of metrics the modbus interface does not contain. There are
   * Expelled air (fan speed and target flow)
@@ -34,3 +35,17 @@ So Modbus is meant to be the "stable" interface / stable parsing mode.
 
 * Granularity of metrics
   * Even daily heat meters and power consumption meters are integer kWh granularity only, where the webinterface has floating point numbers
+
+## Differences in metrics
+
+### Merging metrics and use of labels
+
+Where in webscraping mode each entry for each circuit is exposed as a dedicated metric, in modbus mode these are the same metric, with a matching label (details are configured in the [modbus-mapping configuration file](modbus-mapping.yaml)). For example:
+
+* Webscraping: `isg_fusspunkt_hk1{}`, `isg_fusspunkt_hk2{}`
+* Modbus: `isg_fusspunkt{hk="1"}`
+
+### Handling of flags
+
+* Webscraping: `isg_flag_heizkreispumpe`, `isg_flag_schaltprogramm_aktiv`, ...
+* Modbus: `isg_flag{name="heizkreispumpe"}`, `isg_flag{name="schaltprogramm_aktiv"}`, ...
