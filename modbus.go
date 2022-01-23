@@ -103,46 +103,58 @@ func gatherModbusData() {
 	valuesMap = newValuesMap
 }
 
+func readNumericEntry(element ModbusConfigElement, results []byte) (uint16, float64) {
+
+	resultIndex := (element.Address - 1) * 2
+	rawValue := binary.BigEndian.Uint16(results[resultIndex : resultIndex+2])
+	log.Debugf("rawValue for %s is %d", element.Name, rawValue)
+
+	var processedValue float64
+
+	switch element.Type {
+	case TYPE_2:
+		processedValue = float64(int16(rawValue)) / 10
+	case TYPE_6:
+		processedValue = float64(rawValue)
+		// merge linked data (separation of MWh and kWh)
+		if element.MergeData.Address > 0 {
+			log.Debugf("Merging address %d into %d for %s", element.MergeData.Address, element.Address, element.Name)
+			mergeIndex := (element.MergeData.Address - 1) * 2
+			mergeValue := float64(binary.BigEndian.Uint16(results[mergeIndex : mergeIndex+2]))
+			if math.Abs(mergeValue) != 32768 {
+				processedValue += (mergeValue * float64(element.MergeData.Factor))
+			}
+		}
+	case TYPE_7:
+		processedValue = float64(int16(rawValue)) / 100
+	case TYPE_8, BITVECTOR:
+		// no processed value for those types
+	default:
+		log.Warnf("%s: Unrecognized numeric type %d", element.Name, element.Type)
+	}
+
+	log.Debugf("processedValue for %s is %f, abs is %f", element.Name, processedValue, math.Abs(processedValue))
+	return rawValue, processedValue
+}
+
 func processModbusRegister(block ModbusConfigBlock, results []byte, newValuesMap map[string][]IsgValue) {
 	for _, element := range block.Data {
-		resultIndex := (element.Address - 1) * 2
-		rawValue := float64(binary.BigEndian.Uint16(results[resultIndex : resultIndex+2]))
-		log.Debugf("rawValue for %s is %f, abs is %f", element.Name, rawValue, math.Abs(rawValue))
 
 		// skip HK2 if intended
 		if element.Labels["hk"] == "2" && options.SkipCircuit2 {
 			continue
 		}
 
+		rawValue, processedValue := readNumericEntry(element, results)
+
 		// skip "unset" values
-		if math.Abs(rawValue) == 32768 {
+		if math.Abs(float64(rawValue)) == 32768 {
 			continue
 		}
 
-		// merge linked data (separation of MWh and kWh)
-		if element.MergeData.Address > 0 {
-			log.Debugf("Merging address %d into %d for %s", element.MergeData.Address, element.Address, element.Name)
-			mergeIndex := (element.MergeData.Address - 1) * 2
-			mergeValue := float64(binary.BigEndian.Uint16(results[mergeIndex : mergeIndex+2]))
-			if math.Abs(mergeValue) == 32768 {
-				continue
-			}
-			rawValue += mergeValue * float64(element.MergeData.Factor)
-		}
-
 		switch element.Type {
-		case TYPE_2:
-			processedValue := float64(rawValue) / 10
+		case TYPE_2, TYPE_6, TYPE_7:
 			log.Infof("%s: %.1f %s", element.Name, processedValue, element.Unit)
-			createOrRetrieve(element.Name, element.Unit, element.Labels).Set(processedValue)
-			newValuesMap[element.Name] = append(newValuesMap[element.Name], IsgValue{Value: processedValue, Unit: element.Unit, Labels: element.Labels})
-		case TYPE_6:
-			log.Infof("%s: %.0f %s", element.Name, rawValue, element.Unit)
-			createOrRetrieve(element.Name, element.Unit, element.Labels).Set(float64(rawValue))
-			newValuesMap[element.Name] = append(newValuesMap[element.Name], IsgValue{Value: rawValue, Unit: element.Unit, Labels: element.Labels})
-		case TYPE_7:
-			processedValue := float64(rawValue) / 100
-			log.Infof("%s: %.2f %s", element.Name, processedValue, element.Unit)
 			createOrRetrieve(element.Name, element.Unit, element.Labels).Set(processedValue)
 			newValuesMap[element.Name] = append(newValuesMap[element.Name], IsgValue{Value: processedValue, Unit: element.Unit, Labels: element.Labels})
 		case TYPE_8:
