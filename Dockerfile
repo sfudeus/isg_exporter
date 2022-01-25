@@ -1,4 +1,4 @@
-ARG GO_VERSION=1.17.5
+ARG GO_VERSION=1.17.6
 FROM --platform=$BUILDPLATFORM golang:${GO_VERSION} AS builder
 RUN mkdir /build
 COPY *.go go.* /build/
