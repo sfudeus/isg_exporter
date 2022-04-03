@@ -334,7 +334,7 @@ lwz:
         mapping:
           1: AUS
           2: EINGELEITET
-      - name: BETRIEBSSTATUS-2
+      - name: BETRIEBSSTATUS_2
         address: 5
         type: 100
         mapping:
@@ -471,11 +471,11 @@ lwz:
         address: 1
         type: 6
         unit: ""
-      - name: SG_READY_IN-1
+      - name: SG_READY_IN_1
         address: 2
         type: 6
         unit: ""
-      - name: SG_READY_IN-2
+      - name: SG_READY_IN_2
         address: 3
         type: 6
         unit: ""
