@@ -196,3 +196,47 @@ func processModbusRegister(block ModbusConfigBlock, results []byte, newValuesMap
 		}
 	}
 }
+
+type SGReady struct {
+	name string
+	data []byte
+}
+
+const (
+	Lock   = "lock"
+	Normal = "normal"
+	Active = "active"
+	Force  = "force"
+)
+
+func SetSGReadyLevel(level string) {
+
+	var sgready_target SGReady
+
+	switch level {
+	case Lock:
+		sgready_target = SGReady{Lock, []byte{0, 0, 0, 1}}
+	case Normal:
+		sgready_target = SGReady{Normal, []byte{0, 0, 0, 0}}
+	case Active:
+		sgready_target = SGReady{Active, []byte{0, 1, 0, 0}}
+	case Force:
+		sgready_target = SGReady{Force, []byte{0, 1, 0, 1}}
+	default:
+		log.Fatalf("Unexpected level %s", level)
+	}
+
+	log.Debugf("Setting sgready to %b", sgready_target.data)
+	result, err := client.WriteMultipleRegisters(4001, 4, sgready_target.data)
+	if err != nil {
+		log.Fatal("Failed to set sg-ready flags\n", err)
+	}
+
+	result, err = client.ReadHoldingRegisters(4001, 2)
+	for i := range [2]int{} {
+		log.Infof("Successfully read back %d: %d", 4001+i, binary.BigEndian.Uint16(result[i*2:i*2+2]))
+	}
+
+	result, err = client.ReadInputRegisters(5000, 1)
+	log.Infof("Successfully read 5001: %d", binary.BigEndian.Uint16(result[0:2]))
+}
