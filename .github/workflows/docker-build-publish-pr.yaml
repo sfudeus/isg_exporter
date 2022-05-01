@@ -1,0 +1,34 @@
+name: Docker Build/Publish Image on PR
+on:
+  pull_request:
+    branches:
+      - master
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    env:
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Define revision
+      id: revision
+      run: |
+        echo "::set-output name=target-revision::preview-${GITHUB_REF##*/}"
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v1
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+    - name: Docker login
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+    - name: Docker build/push
+      uses: docker/build-push-action@v2
+      with:
+        platforms: linux/amd64,linux/arm/v7,linux/arm64
+        tags: |
+          "sfudeus/isg_exporter:${{ steps.revision.outputs.target-revision }}"
+        push: true
