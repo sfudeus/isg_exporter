@@ -78,6 +78,27 @@ A from-scratch docker image is automatically built for each new version and push
 
 Sample Grafana dashboards (using prometheus, with and without modbus) can be found at `resources/grafana`.
 
+## SGReady webhook support
+
+This exporter supports setting the SGReady mode by consuming Alertmanager webhook calls.
+The content of the webhook in status `firing` should provide a `target` label, which controls if the SGReady status is set to 3 (active, label value is `active`) or 1 (inactive, label value is `inactive`).
+If the alert status is `resolved`, SGReady status is set back to status 2 (normal).
+
+With this, you are free to define an arbitrary alert in Prometheus (e.g. when your power grid feed is > 3kW) which, when triggered, causes your heat pump to get active. When the alerts is lifted it will return.
+Within Alertmanager, you can register isg-exporter as a receiver to only receive these alerts.
+The URL endpoint for alertmanager webhooks is `/webhooks/alertmanager`.
+
+There are additional prometheus metrics with counters for the amount of activations per level and the amount of errors encountered.
+
+```text
+# HELP isg_sgready_action_total Amount of successful invocations per action-level
+# TYPE isg_sgready_action_total counter
+isg_sgready_action_total{action="normal"} 1
+# HELP isg_sgready_error_total Amount of failed invocations
+# TYPE isg_sgready_error_total counter
+isg_sgready_error_total 0
+```
+
 ## Build
 
 Checkout the sources and run `go build` in the main directory. There are testcases which are run with `go test`.

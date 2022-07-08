@@ -1,14 +1,14 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
-	"net/http/pprof"
 	"os"
 	"strings"
 	"time"
 
+	"github.com/gin-contrib/pprof"
+	"github.com/gin-gonic/gin"
 	"github.com/jessevdk/go-flags"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
@@ -91,13 +91,40 @@ func main() {
 		}
 	}()
 
-	http.Handle("/metrics", promhttp.Handler())
-	http.HandleFunc("/status", getData)
-	if options.Debug {
-		http.HandleFunc("/debug/pprof", pprof.Index)
-	}
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", options.Port), nil))
+	startWebserver(options.Port, options.Debug, options.Mode == MODE_MODBUS)
+}
 
+func startWebserver(port int64, debug bool, withModbus bool) {
+	log.Info("Starting webserver")
+	if debug {
+		gin.SetMode(gin.DebugMode)
+	} else {
+		gin.SetMode(gin.ReleaseMode)
+	}
+
+	router := gin.Default()
+	router.SetTrustedProxies(nil)
+
+	if debug {
+		pprof.Register(router)
+	}
+
+	router.GET("/ready", func(c *gin.Context) { c.String(http.StatusOK, "ready") })
+	router.GET("/status", getStatusData)
+	router.GET("/metrics", prometheusHandler())
+
+	if withModbus {
+		router.POST("/webhooks/alertmanager", callAlertmanagerWebhook)
+	}
+	router.Run(fmt.Sprintf(":%d", port))
+}
+
+func prometheusHandler() gin.HandlerFunc {
+	h := promhttp.Handler()
+
+	return func(c *gin.Context) {
+		h.ServeHTTP(c.Writer, c.Request)
+	}
 }
 
 func validate() {
@@ -177,10 +204,8 @@ func createOrRetrieve(name string, unit string, labels map[string]string) promet
 	return val.WithLabelValues(labelValues...)
 }
 
-func getData(w http.ResponseWriter, r *http.Request) {
+func getStatusData(c *gin.Context) {
 	timer := prometheus.NewTimer(statusDuration)
 	defer timer.ObserveDuration()
-	json, _ := json.Marshal(valuesMap)
-	w.Header().Add("Content-Type", "application/json")
-	w.Write(json)
+	c.JSON(http.StatusOK, valuesMap)
 }

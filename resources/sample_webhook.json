@@ -1,0 +1,24 @@
+{
+  "version": "4",
+  "groupKey": "string",
+  "truncatedAlerts": 0,
+  "status": "firing",
+  "receiver": "receiver",
+  "groupLabels": {},
+  "commonLabels": {},
+  "commonAnnotations": {},
+  "externalURL": "link",
+  "alerts": [
+    {
+      "status": "firing",
+      "labels": {
+        "target": "active"
+      },
+      "annotations": {},
+      "startsAt": "2019-10-12T07:20:50.52Z",
+      "endsAt": "2019-10-12T07:20:50.52Z",
+      "generatorURL": "xx",
+      "fingerprint": "xxx"
+    }
+  ]
+}
