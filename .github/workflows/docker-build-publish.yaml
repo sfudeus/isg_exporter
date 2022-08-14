@@ -1,4 +1,4 @@
-name: Docker Build/Publish Image
+name: Docker Build/Publish Release
 on:
   push:
     tags:
@@ -33,6 +33,6 @@ jobs:
       with:
         platforms: linux/amd64,linux/arm/v7,linux/arm64
         tags: |
-          "sfudeus/isg_exporter:${{ steps.revision.outputs.target-revision }}"
-          "sfudeus/isg_exporter:latest"
+          ""${{ github.repository }}:${{ steps.revision.outputs.target-revision }}"
+          ""${{ github.repository }}:latest"
         push: true
