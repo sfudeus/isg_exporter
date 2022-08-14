@@ -33,6 +33,6 @@ jobs:
       with:
         platforms: linux/amd64,linux/arm/v7,linux/arm64
         tags: |
-          ""${{ github.repository }}:${{ steps.revision.outputs.target-revision }}"
-          ""${{ github.repository }}:latest"
+          "${{ github.repository }}:${{ steps.revision.outputs.target-revision }}"
+          "${{ github.repository }}:latest"
         push: true
