@@ -7,7 +7,7 @@ require (
 	github.com/headzoo/surf v1.0.1
 	github.com/jessevdk/go-flags v1.5.0
 	github.com/pashi-corp/modbus v0.1.0
-	github.com/prometheus/client_golang v1.13.0
+	github.com/prometheus/client_golang v1.13.1
 	github.com/sirupsen/logrus v1.9.0
 	gopkg.in/yaml.v2 v2.4.0
 )
