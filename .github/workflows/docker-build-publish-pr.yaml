@@ -13,7 +13,7 @@ jobs:
     - name: Define revision
       id: revision
       run: |
-        echo "target-revision=preview-${GITHUB_HEAD_REF}" >> $GITHUB_OUTPUT
+        echo "target-revision=preview-${{ github.event.number }}" >> $GITHUB_OUTPUT
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v2
     - name: Set up Docker Buildx
