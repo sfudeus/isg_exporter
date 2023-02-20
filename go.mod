@@ -1,7 +1,7 @@
 module github.com/sfudeus/isg_exporter
 
 require (
-	github.com/PuerkitoBio/goquery v1.8.0
+	github.com/PuerkitoBio/goquery v1.8.1
 	github.com/gin-contrib/pprof v1.4.0
 	github.com/gin-gonic/gin v1.8.2
 	github.com/headzoo/surf v1.0.1
