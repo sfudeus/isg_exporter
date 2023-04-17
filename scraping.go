@@ -92,31 +92,34 @@ func parsePage(page string, flagRemovalList map[string]prometheus.Gauge) {
 		prepareScraping()
 	}
 
-	bow.Find("form#werte table.info tr.even,tr.odd").Each(func(_ int, s *goquery.Selection) {
-		key := s.Find("td.key").Text()
-		value := strings.TrimSpace(s.Find("td.value").Text())
+	bow.Find("form#werte table.info").Each(func(_ int, table *goquery.Selection) {
+		table.Find("tr.even,tr.odd").Each(func(_ int, s *goquery.Selection) {
+			key := s.Find("td.key").Text()
+			value := strings.TrimSpace(s.Find("td.value").Text())
 
-		label := normalizeLabel(key)
+			header := table.Find("th.round-top").Text()
+			label := normalizeLabel(header + "_" + key)
 
-		if strings.Contains(label, "hk2") && options.SkipCircuit2 {
-			return
-			/* TODO
-			} else if string.index(label, kuehlen) > -1 && options.SkipCooling {
+			if strings.Contains(label, "hk2") && options.SkipCircuit2 {
 				return
-			*/
-		}
+				/* TODO
+				} else if string.index(label, kuehlen) > -1 && options.SkipCooling {
+					return
+				*/
+			}
 
-		if value != "" {
-			isgValue := normalizeValue(value)
-			valuesMap[label] = append(valuesMap[label], isgValue)
-			createOrRetrieve(label, isgValue.Unit, nil).Set(isgValue.Value)
-		} else {
-			label = "flag_" + label
-			flagGauge := createOrRetrieve(label, "", nil)
-			flagGauge.Set(1)
-			flagGaugesMap[label] = flagGauge
-			delete(flagRemovalList, label)
-		}
+			if value != "" {
+				isgValue := normalizeValue(value)
+				valuesMap[label] = append(valuesMap[label], isgValue)
+				createOrRetrieve(label, isgValue.Unit, nil).Set(isgValue.Value)
+			} else {
+				label = "flag_" + label
+				flagGauge := createOrRetrieve(label, "", nil)
+				flagGauge.Set(1)
+				flagGaugesMap[label] = flagGauge
+				delete(flagRemovalList, label)
+			}
+		})
 	})
 }
 func normalizeLabel(s string) string {
