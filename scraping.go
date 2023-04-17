@@ -146,8 +146,19 @@ func normalizeLabel(s string) string {
 }
 
 func normalizeValue(s string) IsgValue {
+	// in some cases like "FIXED VALUE OPERATION" instead of boolean value its used "On" and "Off" to prevent exceptions the switch is used
+	switch s {
+	case "Aus", "Off", "Apagado", "Uit", "Spento", "Av", "Wyłączony", "Vyp", "Kikapcsolva", "Apagat", "Pois":
+		s = "0"
+	case "Ein", "On", "Allumé", "Aan", "Acceso", "På", "Włączony", "Zap", "Bekapcsolva", "Encendido", "Päällä", "Tændt":
+		s = "1"
+	}
 	re := regexp.MustCompile(`(?P<value>[0-9,.-]+)( ?)(?P<unit>[a-zA-Z°%/²³.]*)`)
 	matches := re.FindStringSubmatch(s)
+	// Fix to prevent exception if s can not be converted into float
+	if len(matches) == 0 {
+		return IsgValue{Value: 0, Unit: "Error: is no float"}
+	}
 	// ISG exports numbers with decimal separator ",", even with language setting english
 	// needs to be converted to be parsed as float
 	value := strings.Replace(matches[re.SubexpIndex("value")], ",", ".", -1)
@@ -167,3 +178,4 @@ func normalizeValue(s string) IsgValue {
 
 	return IsgValue{Value: float, Unit: unit}
 }
+
