@@ -92,31 +92,34 @@ func parsePage(page string, flagRemovalList map[string]prometheus.Gauge) {
 		prepareScraping()
 	}
 
-	bow.Find("form#werte table.info tr.even,tr.odd").Each(func(_ int, s *goquery.Selection) {
-		key := s.Find("td.key").Text()
-		value := strings.TrimSpace(s.Find("td.value").Text())
+	bow.Find("form#werte table.info").Each(func(_ int, table *goquery.Selection) {
+		table.Find("tr.even,tr.odd").Each(func(_ int, s *goquery.Selection) {
+			key := s.Find("td.key").Text()
+			value := strings.TrimSpace(s.Find("td.value").Text())
 
-		label := normalizeLabel(key)
+			header := table.Find("th.round-top").Text()
+			label := normalizeLabel(header + "_" + key)
 
-		if strings.Contains(label, "hk2") && options.SkipCircuit2 {
-			return
-			/* TODO
-			} else if string.index(label, kuehlen) > -1 && options.SkipCooling {
+			if strings.Contains(label, "hk2") && options.SkipCircuit2 {
 				return
-			*/
-		}
+				/* TODO
+				} else if string.index(label, kuehlen) > -1 && options.SkipCooling {
+					return
+				*/
+			}
 
-		if value != "" {
-			isgValue := normalizeValue(value)
-			valuesMap[label] = append(valuesMap[label], isgValue)
-			createOrRetrieve(label, isgValue.Unit, nil).Set(isgValue.Value)
-		} else {
-			label = "flag_" + label
-			flagGauge := createOrRetrieve(label, "", nil)
-			flagGauge.Set(1)
-			flagGaugesMap[label] = flagGauge
-			delete(flagRemovalList, label)
-		}
+			if value != "" {
+				isgValue := normalizeValue(value)
+				valuesMap[label] = append(valuesMap[label], isgValue)
+				createOrRetrieve(label, isgValue.Unit, nil).Set(isgValue.Value)
+			} else {
+				label = "flag_" + label
+				flagGauge := createOrRetrieve(label, "", nil)
+				flagGauge.Set(1)
+				flagGaugesMap[label] = flagGauge
+				delete(flagRemovalList, label)
+			}
+		})
 	})
 }
 func normalizeLabel(s string) string {
@@ -143,8 +146,19 @@ func normalizeLabel(s string) string {
 }
 
 func normalizeValue(s string) IsgValue {
+	// in some cases like "FIXED VALUE OPERATION" instead of boolean value its used "On" and "Off" to prevent exceptions the switch is used
+	switch s {
+	case "Aus", "Off", "Apagado", "Uit", "Spento", "Av", "Wyłączony", "Vyp", "Kikapcsolva", "Apagat", "Pois":
+		s = "0"
+	case "Ein", "On", "Allumé", "Aan", "Acceso", "På", "Włączony", "Zap", "Bekapcsolva", "Encendido", "Päällä", "Tændt":
+		s = "1"
+	}
 	re := regexp.MustCompile(`(?P<value>[0-9,.-]+)( ?)(?P<unit>[a-zA-Z°%/²³.]*)`)
 	matches := re.FindStringSubmatch(s)
+	// Fix to prevent exception if s can not be converted into float
+	if len(matches) == 0 {
+		return IsgValue{Value: 0, Unit: "Error: is no float"}
+	}
 	// ISG exports numbers with decimal separator ",", even with language setting english
 	// needs to be converted to be parsed as float
 	value := strings.Replace(matches[re.SubexpIndex("value")], ",", ".", -1)
@@ -164,3 +178,4 @@ func normalizeValue(s string) IsgValue {
 
 	return IsgValue{Value: float, Unit: unit}
 }
+
