@@ -28,6 +28,9 @@ var options struct {
 	Loglevel        string `long:"loglevel" default:"warn" description:"logLevel (trace,debug,info,warn(ing),error,fatal,panic)"`
 	Mode            string `long:"mode" default:"webscraping" description:"Gathering mode (webscraping|modbus)"`
 	ModbusSlaveId   int64  `long:"modbusSlaveId" default:"1" description:"slaveId to use for modbus communication"`
+	MqttHost        string `long:"mqttHost" description:"MQTT host to send data to (optional)"`
+	MqttPort        int64  `long:"mqttPort" description:"MQTT port to send data to (optional)" default:"1883"`
+	MqttTopicPrefix string `long:"mqttTopicPrefix" description:"Topic prefix for MQTT" default:"isg"`
 	// TODO: SkipCooling  bool   `long:"skipCooling" description:"Toggle to skip data for cooling" env:"SKIP_COOLING"`
 }
 
@@ -154,6 +157,9 @@ func prepare() {
 	case MODE_WEBSCRAPING:
 		prepareScraping()
 	}
+	if len(options.MqttHost) > 0 {
+		connectMqtt()
+	}
 }
 
 func gatherData() {
@@ -165,6 +171,9 @@ func gatherData() {
 		gatherModbusData()
 	case MODE_WEBSCRAPING:
 		gatherScrapingData()
+	}
+	if len(options.MqttHost) > 0 {
+		publishMqtt()
 	}
 }
 
