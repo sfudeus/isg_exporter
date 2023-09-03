@@ -44,12 +44,12 @@ const (
 )
 
 var (
-	actions = promauto.NewCounterVec(prometheus.CounterOpts{
+	actions_counter = promauto.NewCounterVec(prometheus.CounterOpts{
 		Name:      "sgready_action_total",
 		Namespace: "isg",
 		Help:      "Amount of successful invocations per action-level",
 	}, []string{"action"})
-	error = promauto.NewCounter(prometheus.CounterOpts{
+	error_counter = promauto.NewCounter(prometheus.CounterOpts{
 		Name:      "sgready_error_total",
 		Namespace: "isg",
 		Help:      "Amount of failed invocations",
@@ -61,7 +61,7 @@ func callAlertmanagerWebhook(c *gin.Context) {
 
 	log.Info("Webhook called")
 	if err := c.ShouldBindJSON(&webhook); err != nil {
-		error.Inc()
+		error_counter.Inc()
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -72,24 +72,24 @@ func callAlertmanagerWebhook(c *gin.Context) {
 		case STATUS_RESOLVED:
 			log.Info("Triggering sgReady 2")
 			SetSGReadyLevel(Normal)
-			actions.WithLabelValues(Normal).Inc()
+			actions_counter.WithLabelValues(Normal).Inc()
 		case STATUS_FIRING:
 			switch alert.Labels["target"] {
 			case LABEL_ACTIVE:
 				log.Info("Triggering sgReady 3")
 				SetSGReadyLevel(Active)
-				actions.WithLabelValues(Active).Inc()
+				actions_counter.WithLabelValues(Active).Inc()
 			case LABEL_INACTIVE:
 				log.Info("Triggering sgReady 1")
 				SetSGReadyLevel(Lock)
-				actions.WithLabelValues(Lock).Inc()
+				actions_counter.WithLabelValues(Lock).Inc()
 			default:
 				log.Warnf("Received unexpected target label %s", alert.Labels["target"])
-				actions.WithLabelValues("unknown").Inc()
+				actions_counter.WithLabelValues("unknown").Inc()
 			}
 		default:
 			log.Warnf("Received unexpected status %s", webhook.Status)
-			actions.WithLabelValues("unknown").Inc()
+			actions_counter.WithLabelValues("unknown").Inc()
 		}
 	}
 
