@@ -170,7 +170,7 @@ func processModbusRegister(block ModbusConfigBlock, results []byte, newValuesMap
 					status = 1
 				}
 				createOrRetrieve(element.Name, element.Unit, labels).Set(float64(status))
-				newValuesMap[element.Name+"."+labels["name"]] = append(newValuesMap[element.Name+"."+labels["name"]], IsgValue{Value: 1})
+				newValuesMap[element.Name+"."+labels["name"]] = append(newValuesMap[element.Name+"."+labels["name"]], IsgValue{Value: float64(status)})
 			}
 		case BITVECTOR:
 			log.Infof("%s:", element.Name)
@@ -189,7 +189,7 @@ func processModbusRegister(block ModbusConfigBlock, results []byte, newValuesMap
 				}
 				labels["name"] = strings.ToLower(name)
 				createOrRetrieve("flag", "", labels).Set(float64(value))
-				newValuesMap[element.Name+"."+labels["name"]] = append(newValuesMap[element.Name+"."+labels["name"]], IsgValue{Value: 1})
+				newValuesMap[element.Name+"."+labels["name"]] = append(newValuesMap[element.Name+"."+labels["name"]], IsgValue{Value: float64(value)})
 			}
 		default:
 			log.Warnf("%s: Unrecognized type %d", element.Name, element.Type)
