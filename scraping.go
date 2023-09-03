@@ -108,6 +108,7 @@ func parsePage(page string, flagRemovalList map[string]prometheus.Gauge) {
 
 		if value != "" {
 			isgValue := normalizeValue(value)
+			valuesMap[label] = make([]IsgValue, 0)
 			valuesMap[label] = append(valuesMap[label], isgValue)
 			createOrRetrieve(label, isgValue.Unit, nil).Set(isgValue.Value)
 		} else {
