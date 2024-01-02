@@ -3,8 +3,8 @@ package main
 import (
 	"encoding/binary"
 	"fmt"
-	"io/ioutil"
 	"math"
+	"os"
 	"strings"
 
 	"github.com/pashi-corp/modbus"
@@ -57,7 +57,7 @@ var modbusConfig ModbusConfig
 
 func prepareModbus() {
 
-	modbusConfigFile, err := ioutil.ReadFile("modbus-mapping.yaml")
+	modbusConfigFile, err := os.ReadFile("modbus-mapping.yaml")
 	if err != nil {
 		log.Fatal(err)
 	}
