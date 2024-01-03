@@ -30,8 +30,12 @@ var options struct {
 	ModbusSlaveId            int64  `long:"modbusSlaveId" default:"1" description:"slaveId to use for modbus communication"`
 	MqttHost                 string `long:"mqttHost" description:"MQTT host to send data to (optional)"`
 	MqttPort                 int64  `long:"mqttPort" description:"MQTT port to send data to (optional)" default:"1883"`
+	MqttTls                  bool   `long:"mqttTls" description:"Activate TLS for MQTT"`
+	MqttTlsInsecure          bool   `long:"mqttTlsInsecure" description:"Allow insecure TLS for MQTT"`
 	MqttTopicPrefix          string `long:"mqttTopicPrefix" description:"Topic prefix for MQTT" default:"isg"`
 	MqttDiscoveryTopicPrefix string `long:"mqttDiscoveryTopicPrefix" description:"Topic prefix for homeassistant discovery" default:"homeassistant"`
+	MqttUser                 string `long:"mqttUser" description:"Username to use for the MQTT connection" env:"MQTT_USER"`
+	MqttPassword             string `long:"mqttPassword" description:"Password to use for the MQTT connection" env:"MQTT_PASSWORD"`
 	// TODO: SkipCooling  bool   `long:"skipCooling" description:"Toggle to skip data for cooling" env:"SKIP_COOLING"`
 }
 

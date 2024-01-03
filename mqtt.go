@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/tls"
 	json "encoding/json"
 	"fmt"
 	"strings"
@@ -23,7 +24,20 @@ var connectionLostHandler mqtt.ConnectionLostHandler = func(client mqtt.Client, 
 
 func connectMqtt() {
 	clientOptions := mqtt.NewClientOptions()
-	clientOptions.AddBroker(fmt.Sprintf("tcp://%s:%d", options.MqttHost, options.MqttPort))
+	var protocol string
+	if options.MqttTls {
+		protocol = "tls"
+	} else {
+		protocol = "tcp"
+	}
+	clientOptions.AddBroker(fmt.Sprintf("%s://%s:%d", protocol, options.MqttHost, options.MqttPort))
+	if options.MqttTlsInsecure && options.MqttTls {
+		clientOptions.SetTLSConfig(&tls.Config{InsecureSkipVerify: true})
+	}
+	if len(options.MqttUser) > 0 && len(options.MqttPassword) > 0 {
+		clientOptions.SetUsername(options.MqttUser)
+		clientOptions.SetPassword(options.MqttPassword)
+	}
 	clientOptions.SetOnConnectHandler(connectHandler)
 	clientOptions.SetConnectionLostHandler(connectionLostHandler)
 	mqttClient = mqtt.NewClient(clientOptions)
