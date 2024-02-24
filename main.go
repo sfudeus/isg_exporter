@@ -17,20 +17,25 @@ import (
 )
 
 var options struct {
-	Port            int64  `long:"port" default:"8080" description:"The address to listen on for HTTP requests." env:"EXPORTER_PORT"`
-	Interval        int64  `long:"interval" default:"60" env:"INTERVAL" description:"The frequency in seconds in which to gather data"`
-	URL             string `long:"url" env:"ISG_URL" description:"URL for ISG"`
-	User            string `long:"user" env:"ISG_USER" description:"username for ISG"`
-	Password        string `long:"password" env:"ISG_PASSWORD" description:"password for ISG"`
-	BrowserRollover int64  `long:"browserRollover" default:"60" description:"number of iterations until the internal browser is recreated"`
-	SkipCircuit2    bool   `long:"skipCircuit2" description:"Toogle to skip data for circuit 2" env:"SKIP_CIRCUIT_2"`
-	Debug           bool   `long:"debug"`
-	Loglevel        string `long:"loglevel" default:"warn" description:"logLevel (trace,debug,info,warn(ing),error,fatal,panic)"`
-	Mode            string `long:"mode" default:"webscraping" description:"Gathering mode (webscraping|modbus)"`
-	ModbusSlaveId   int64  `long:"modbusSlaveId" default:"1" description:"slaveId to use for modbus communication"`
-	MqttHost        string `long:"mqttHost" description:"MQTT host to send data to (optional)"`
-	MqttPort        int64  `long:"mqttPort" description:"MQTT port to send data to (optional)" default:"1883"`
-	MqttTopicPrefix string `long:"mqttTopicPrefix" description:"Topic prefix for MQTT" default:"isg"`
+	Port                     int64  `long:"port" default:"8080" description:"The address to listen on for HTTP requests." env:"EXPORTER_PORT"`
+	Interval                 int64  `long:"interval" default:"60" env:"INTERVAL" description:"The frequency in seconds in which to gather data"`
+	URL                      string `long:"url" env:"ISG_URL" description:"URL for ISG"`
+	User                     string `long:"user" env:"ISG_USER" description:"username for ISG"`
+	Password                 string `long:"password" env:"ISG_PASSWORD" description:"password for ISG"`
+	BrowserRollover          int64  `long:"browserRollover" default:"60" description:"number of iterations until the internal browser is recreated"`
+	SkipCircuit2             bool   `long:"skipCircuit2" description:"Toogle to skip data for circuit 2" env:"SKIP_CIRCUIT_2"`
+	Debug                    bool   `long:"debug"`
+	Loglevel                 string `long:"loglevel" default:"warn" description:"logLevel (trace,debug,info,warn(ing),error,fatal,panic)"`
+	Mode                     string `long:"mode" default:"webscraping" description:"Gathering mode (webscraping|modbus)"`
+	ModbusSlaveId            int64  `long:"modbusSlaveId" default:"1" description:"slaveId to use for modbus communication"`
+	MqttHost                 string `long:"mqttHost" description:"MQTT host to send data to (optional)"`
+	MqttPort                 int64  `long:"mqttPort" description:"MQTT port to send data to (optional)" default:"1883"`
+	MqttTls                  bool   `long:"mqttTls" description:"Activate TLS for MQTT"`
+	MqttTlsInsecure          bool   `long:"mqttTlsInsecure" description:"Allow insecure TLS for MQTT"`
+	MqttTopicPrefix          string `long:"mqttTopicPrefix" description:"Topic prefix for MQTT" default:"isg"`
+	MqttDiscoveryTopicPrefix string `long:"mqttDiscoveryTopicPrefix" description:"Topic prefix for homeassistant discovery" default:"homeassistant"`
+	MqttUser                 string `long:"mqttUser" description:"Username to use for the MQTT connection" env:"MQTT_USER"`
+	MqttPassword             string `long:"mqttPassword" description:"Password to use for the MQTT connection" env:"MQTT_PASSWORD"`
 	// TODO: SkipCooling  bool   `long:"skipCooling" description:"Toggle to skip data for cooling" env:"SKIP_COOLING"`
 }
 
@@ -69,15 +74,15 @@ func main() {
 		os.Exit(1)
 	}
 
-	if options.Debug {
-		log.SetLevel(log.DebugLevel)
-	}
-
 	level, err := log.ParseLevel(options.Loglevel)
 	if err != nil {
 		log.Fatal(err)
 	}
 	log.SetLevel(level)
+
+	if options.Debug {
+		log.SetLevel(log.DebugLevel)
+	}
 
 	validate()
 
