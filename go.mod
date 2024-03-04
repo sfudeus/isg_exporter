@@ -3,7 +3,7 @@ module github.com/sfudeus/isg_exporter
 go 1.22
 
 require (
-	github.com/PuerkitoBio/goquery v1.8.1
+	github.com/PuerkitoBio/goquery v1.9.1
 	github.com/eclipse/paho.mqtt.golang v1.4.3
 	github.com/gin-contrib/pprof v1.4.0
 	github.com/gin-gonic/gin v1.9.1
