@@ -10,7 +10,7 @@ require (
 	github.com/headzoo/surf v1.0.1
 	github.com/jessevdk/go-flags v1.5.0
 	github.com/pashi-corp/modbus v0.1.0
-	github.com/prometheus/client_golang v1.18.0
+	github.com/prometheus/client_golang v1.19.0
 	github.com/sirupsen/logrus v1.9.3
 	gopkg.in/yaml.v2 v2.4.0
 )
@@ -39,7 +39,7 @@ require (
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/pelletier/go-toml/v2 v2.1.1 // indirect
 	github.com/prometheus/client_model v0.6.0 // indirect
-	github.com/prometheus/common v0.47.0 // indirect
+	github.com/prometheus/common v0.48.0 // indirect
 	github.com/prometheus/procfs v0.12.0 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.12 // indirect
