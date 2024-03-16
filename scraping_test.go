@@ -12,9 +12,19 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 )
 
+func checkExpectError(err error, expect bool, t *testing.T) {
+	if err != nil && !expect {
+		t.Errorf("Expected success, got error: %s", err)
+	}
+	if err == nil && expect {
+		t.Errorf("Expected error, got none")
+	}
+}
+
 func TestNormalizeValue(t *testing.T) {
 
-	res := normalizeValue("10,123 kWh")
+	res, err := normalizeValue("10,123 kWh")
+	checkExpectError(err, false, t)
 	if res.Unit != "kWh" {
 		t.Errorf("Expected kWh as unit, but got %s", res.Unit)
 	}
@@ -22,7 +32,8 @@ func TestNormalizeValue(t *testing.T) {
 		t.Errorf("Expected 10.123 as value, but got %f", res.Value)
 	}
 
-	res = normalizeValue("10")
+	res, err = normalizeValue("10")
+	checkExpectError(err, false, t)
 	if res.Unit != "" {
 		t.Error("Expected empty unit")
 	}
@@ -30,7 +41,8 @@ func TestNormalizeValue(t *testing.T) {
 		t.Fail()
 	}
 
-	res = normalizeValue("3,345 MWh")
+	res, err = normalizeValue("3,345 MWh")
+	checkExpectError(err, false, t)
 	if res.Unit != "kWh" {
 		t.Errorf("Expected conversion to kWh, but got %s", res.Unit)
 	}
@@ -38,7 +50,8 @@ func TestNormalizeValue(t *testing.T) {
 		t.Errorf("Expected 3345, but got %f", res.Value)
 	}
 
-	res = normalizeValue("18.321kWh")
+	res, err = normalizeValue("18.321kWh")
+	checkExpectError(err, false, t)
 	if res.Unit != "kWh" {
 		t.Errorf("Expected kWh as unit, but got %s", res.Unit)
 	}
@@ -46,7 +59,8 @@ func TestNormalizeValue(t *testing.T) {
 		t.Errorf("Expected 18.321, but got %f", res.Value)
 	}
 
-	res = normalizeValue("15,8°C")
+	res, err = normalizeValue("15,8°C")
+	checkExpectError(err, false, t)
 	if res.Unit != "°C" {
 		t.Errorf("Expected °C as unit, but got %s", res.Unit)
 	}
@@ -54,17 +68,34 @@ func TestNormalizeValue(t *testing.T) {
 		t.Errorf("Expected 15.8, but got %f", res.Value)
 	}
 
-	res = normalizeValue("-15,8°C")
+	res, err = normalizeValue("-15,8°C")
+	checkExpectError(err, false, t)
 	if res.Unit != "°C" {
 		t.Errorf("Expected °C as unit, but got %s", res.Unit)
 	}
 	if res.Value != -15.8 {
 		t.Errorf("Expected -15.8, but got %f", res.Value)
 	}
-	res = normalizeValue("1 l/min")
-	res = normalizeValue("1 %")
-	res = normalizeValue("1 m³/h")
+	res, err = normalizeValue("1 l/min")
+	checkExpectError(err, false, t)
+	res, err = normalizeValue("1 %")
+	checkExpectError(err, false, t)
+	res, err = normalizeValue("1 m³/h")
+	checkExpectError(err, false, t)
 
+	res, err = normalizeValue("On")
+	checkExpectError(err, false, t)
+	if res.Value != 1 {
+		t.Errorf("Expected 1, but got %f", res.Value)
+	}
+	res, err = normalizeValue("Off")
+	checkExpectError(err, false, t)
+	if res.Value != 0 {
+		t.Errorf("Expected 0, but got %f", res.Value)
+	}
+
+	res, err = normalizeValue("fnvdnvsdbvdfk")
+	checkExpectError(err, true, t)
 }
 
 func TestNormalizeLabel(t *testing.T) {
