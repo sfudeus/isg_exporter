@@ -93,36 +93,42 @@ func parsePage(page string, flagRemovalList map[string]prometheus.Gauge) {
 		prepareScraping()
 	}
 
-	bow.Find("form#werte table.info tr.even,tr.odd").Each(func(_ int, s *goquery.Selection) {
-		key := s.Find("td.key").Text()
-		value := strings.TrimSpace(s.Find("td.value").Text())
+	bow.Find("form#werte table.info").Each(func(_ int, table *goquery.Selection) {
+		header := table.Find("th.round-top").Text()
+		table.Find("tr.even,tr.odd").Each(func(_ int, s *goquery.Selection) {
+			key := s.Find("td.key").Text()
+			value := strings.TrimSpace(s.Find("td.value").Text())
 
-		label := normalizeLabel(key)
-
-		if strings.Contains(label, "hk2") && options.SkipCircuit2 {
-			return
-			/* TODO
-			} else if string.index(label, kuehlen) > -1 && options.SkipCooling {
-				return
-			*/
-		}
-
-		if value != "" {
-			isgValue, err := normalizeValue(value)
-			if err != nil {
-				log.Warnf("Failed to process value %s for label %s, skipping", value, label)
-				return
+			label := normalizeLabel(key)
+			if options.MetricsWithSectionPrefix {
+				label = normalizeLabel(header + "_" + key)
 			}
-			valuesMap[label] = make([]IsgValue, 0)
-			valuesMap[label] = append(valuesMap[label], isgValue)
-			createOrRetrieve(label, isgValue.Unit, nil).Set(isgValue.Value)
-		} else {
-			label = "flag_" + label
-			flagGauge := createOrRetrieve(label, "", nil)
-			flagGauge.Set(1)
-			flagGaugesMap[label] = flagGauge
-			delete(flagRemovalList, label)
-		}
+
+			if strings.Contains(label, "hk2") && options.SkipCircuit2 {
+				return
+				/* TODO
+				} else if string.index(label, kuehlen) > -1 && options.SkipCooling {
+					return
+				*/
+			}
+
+			if value != "" {
+				isgValue, err := normalizeValue(value)
+				if err != nil {
+					log.Warnf("Failed to process value %s for label %s, skipping", value, label)
+					return
+				}
+				valuesMap[label] = make([]IsgValue, 0)
+				valuesMap[label] = append(valuesMap[label], isgValue)
+				createOrRetrieve(label, isgValue.Unit, nil).Set(isgValue.Value)
+			} else {
+				label = "flag_" + label
+				flagGauge := createOrRetrieve(label, "", nil)
+				flagGauge.Set(1)
+				flagGaugesMap[label] = flagGauge
+				delete(flagRemovalList, label)
+			}
+		})
 	})
 }
 func normalizeLabel(s string) string {

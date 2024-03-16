@@ -36,6 +36,7 @@ var options struct {
 	MqttDiscoveryTopicPrefix string `long:"mqttDiscoveryTopicPrefix" description:"Topic prefix for homeassistant discovery" default:"homeassistant"`
 	MqttUser                 string `long:"mqttUser" description:"Username to use for the MQTT connection" env:"MQTT_USER"`
 	MqttPassword             string `long:"mqttPassword" description:"Password to use for the MQTT connection" env:"MQTT_PASSWORD"`
+	MetricsWithSectionPrefix bool   `long:"metricsWithSectionPrefix" description:"Prefix metrics with their section identifier in webscraping mode" env:"METRICS_WITH_SECTION_PREFIX"`
 	// TODO: SkipCooling  bool   `long:"skipCooling" description:"Toggle to skip data for cooling" env:"SKIP_COOLING"`
 }
 
