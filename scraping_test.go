@@ -143,6 +143,12 @@ func TestPage(t *testing.T) {
 				t.Errorf("Failed delivering sample for 4,7")
 			}
 			fmt.Fprint(w, string(content))
+		} else if page == "onoff" {
+			content, err := os.ReadFile("test_resources/sample_onoff.html")
+			if err != nil {
+				t.Errorf("Failed delivering sample for onoff")
+			}
+			fmt.Fprint(w, string(content))
 		} else {
 			fmt.Fprint(w, "")
 		}
@@ -158,6 +164,11 @@ func TestPage(t *testing.T) {
 	flagRemovalList := make(map[string]prometheus.Gauge)
 	parsePage("1,1", flagRemovalList)
 	parsePage("4,7", flagRemovalList)
+	parsePage("onoff", flagRemovalList)
+
+	if valuesMap["festwertbetrieb"] == nil {
+		t.Errorf("Failed to find expected onoff value")
+	}
 
 	json, _ := json.Marshal(valuesMap)
 	fmt.Println(string(json))
