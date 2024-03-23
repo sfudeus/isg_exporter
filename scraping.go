@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"regexp"
 	"strconv"
 	"strings"
@@ -107,7 +108,11 @@ func parsePage(page string, flagRemovalList map[string]prometheus.Gauge) {
 		}
 
 		if value != "" {
-			isgValue := normalizeValue(value)
+			isgValue, err := normalizeValue(value)
+			if err != nil {
+				log.Warnf("Failed to process value %s for label %s, skipping", value, label)
+				return
+			}
 			valuesMap[label] = make([]IsgValue, 0)
 			valuesMap[label] = append(valuesMap[label], isgValue)
 			createOrRetrieve(label, isgValue.Unit, nil).Set(isgValue.Value)
@@ -143,16 +148,29 @@ func normalizeLabel(s string) string {
 	return s
 }
 
-func normalizeValue(s string) IsgValue {
+func normalizeValue(s string) (IsgValue, error) {
+
+	// some values use fixed boolean vocabulary
+	switch s {
+	case "Aus", "Off", "Apagado", "Uit", "Spento", "Av", "Wyłączony", "Vyp", "Kikapcsolva", "Apagat", "Pois":
+		s = "0"
+	case "Ein", "On", "Allumé", "Aan", "Acceso", "På", "Włączony", "Zap", "Bekapcsolva", "Encendido", "Päällä", "Tændt":
+		s = "1"
+	}
+
 	re := regexp.MustCompile(`(?P<value>[0-9,.-]+)( ?)(?P<unit>[a-zA-Z°%/²³.]*)`)
 	matches := re.FindStringSubmatch(s)
+	if len(matches) == 0 {
+		return IsgValue{}, fmt.Errorf("failed to parse value %s", s)
+	}
+
 	// ISG exports numbers with decimal separator ",", even with language setting english
 	// needs to be converted to be parsed as float
 	value := strings.Replace(matches[re.SubexpIndex("value")], ",", ".", -1)
 	unit := ""
 	float, err := strconv.ParseFloat(value, 64)
 	if err != nil {
-		log.Fatalf("Failed to parse value %s", value)
+		return IsgValue{}, fmt.Errorf("failed to parse value %s: %s", value, err)
 	}
 
 	if len(matches) > 2 {
@@ -163,5 +181,5 @@ func normalizeValue(s string) IsgValue {
 		}
 	}
 
-	return IsgValue{Value: float, Unit: unit}
+	return IsgValue{Value: float, Unit: unit}, nil
 }
