@@ -149,6 +149,12 @@ func TestPage(t *testing.T) {
 				t.Errorf("Failed delivering sample for onoff")
 			}
 			fmt.Fprint(w, string(content))
+		} else if page == "specialchars" {
+			content, err := os.ReadFile("test_resources/sample_specialchars.html")
+			if err != nil {
+				t.Errorf("Failed delivering sample for specialchars")
+			}
+			fmt.Fprint(w, string(content))
 		} else {
 			fmt.Fprint(w, "")
 		}
@@ -165,6 +171,7 @@ func TestPage(t *testing.T) {
 	parsePage("1,1", flagRemovalList)
 	parsePage("4,7", flagRemovalList)
 	parsePage("onoff", flagRemovalList)
+	parsePage("specialchars", flagRemovalList)
 
 	if valuesMap["festwertbetrieb"] == nil {
 		t.Errorf("Failed to find expected onoff value")

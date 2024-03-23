@@ -131,7 +131,7 @@ func normalizeLabel(s string) string {
 		case (r == ' ' || r == '-' || r == '/'):
 			// canonical separator "_"
 			return '_'
-		case r == '.' || r == '(' || r == ')' || r == '*':
+		case r == '.' || r == '(' || r == ')' || r == '*' || r == ',':
 			// ignore other special characters or abbreviation signals
 			return -1
 		}

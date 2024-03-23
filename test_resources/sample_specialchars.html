@@ -1,0 +1,402 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0028)http://192.168.111.17/?s=2,4 -->
+<html xmlns="http://www.w3.org/1999/xhtml" lang="de" data-lt-installed="true"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>STIEBEL ELTRON Reglersteuerung</title>
+	
+	<meta http-equiv="imagetoolbar" content="no">
+	<meta name="content-language" content="de">
+	<meta name="robots" content="noindex,nofollow">
+	<meta name="keywords" content="">
+	<meta name="description" content="">
+  
+  <link rel="shortcut icon" href="http://192.168.111.17/pics/brlogo.ico">
+  <!-- does not exist link rel="stylesheet" href="./css/netzwerk.css" type="text/css" media="all" /-->
+  <link rel="stylesheet" type="text/css" href="./STIEBEL ELTRON Reglersteuerung_files/ste_slider.css">	
+	<!-- Blueprint CSS framework -->
+	<link rel="stylesheet" href="./STIEBEL ELTRON Reglersteuerung_files/screen.css" type="text/css" media="screen, projection">
+	<link rel="stylesheet" href="./STIEBEL ELTRON Reglersteuerung_files/print.css" type="text/css" media="print">	
+	<!--[if lt IE 8]><link rel="stylesheet" href="./css/blueprint/ie.css" type="text/css" media="screen, projection" /><![endif]-->
+	
+	<link rel="stylesheet" href="./STIEBEL ELTRON Reglersteuerung_files/layout.css" type="text/css" media="all">
+  	
+	<link rel="stylesheet" href="./STIEBEL ELTRON Reglersteuerung_files/sifr.css" type="text/css" media="all">
+	<link rel="stylesheet" href="./STIEBEL ELTRON Reglersteuerung_files/thickbox.css" type="text/css" media="all">
+	
+	<link rel="stylesheet" type="text/css" href="./STIEBEL ELTRON Reglersteuerung_files/jquery.jqplot.min.css">
+	
+	  
+  	
+	<script type="text/javascript" src="./STIEBEL ELTRON Reglersteuerung_files/jquery.min.js.Download"></script><script src="chrome-extension://nngceckbapebfimnlniiiahkandclblb/content/fido2/page-script.js" id="bw-fido2-page-script"></script>
+	<script type="text/javascript" src="./STIEBEL ELTRON Reglersteuerung_files/thickbox.js.Download"></script>
+	<script type="text/javascript" src="./STIEBEL ELTRON Reglersteuerung_files/sifr.js.Download"></script>
+	<script type="text/javascript" src="./STIEBEL ELTRON Reglersteuerung_files/sifr_sw.js.Download"></script>
+	<script type="text/javascript" src="./STIEBEL ELTRON Reglersteuerung_files/scripts.js.Download"></script>
+  <script type="text/javascript" src="./STIEBEL ELTRON Reglersteuerung_files/json2.js.Download"></script>
+  <script type="text/javascript" src="./STIEBEL ELTRON Reglersteuerung_files/jquery-ui-1.8.6.custom.min.js.Download"></script>
+    <script type="text/javascript" src="./STIEBEL ELTRON Reglersteuerung_files/setDNS1.js.Download"></script>
+
+	<!-- [if IE] -->
+	<script language="javascript" type="text/javascript" src="./STIEBEL ELTRON Reglersteuerung_files/excanvas.min.js.Download"></script>
+	<!-- [endif] -->
+
+	<!-- for dateAxisRenderer.js -->
+	<script language="javascript" type="text/javascript" src="./STIEBEL ELTRON Reglersteuerung_files/Date.min.js.Download"></script>
+	<!-- BEGIN: load jqplot -->
+	<script language="javascript" type="text/javascript" src="./STIEBEL ELTRON Reglersteuerung_files/jquery.jqplot.min.js.Download"></script>
+	<script language="javascript" type="text/javascript" src="./STIEBEL ELTRON Reglersteuerung_files/jqplot.dateAxisRenderer.js.Download"></script>
+	<script language="javascript" type="text/javascript" src="./STIEBEL ELTRON Reglersteuerung_files/jqplot.barRenderer.js.Download"></script>
+	<script language="javascript" type="text/javascript" src="./STIEBEL ELTRON Reglersteuerung_files/jqplot.categoryAxisRenderer.js.Download"></script>
+	<!-- END: load jqplot -->
+  
+  <!-- BEGIN: load slider -->
+	<script language="javascript" type="text/javascript" src="./STIEBEL ELTRON Reglersteuerung_files/jquery.ui.core.js.Download"></script>
+	<script language="javascript" type="text/javascript" src="./STIEBEL ELTRON Reglersteuerung_files/jquery.ui.widget.js.Download"></script>
+	<script language="javascript" type="text/javascript" src="./STIEBEL ELTRON Reglersteuerung_files/jquery.ui.mouse.js.Download"></script>
+	<script language="javascript" type="text/javascript" src="./STIEBEL ELTRON Reglersteuerung_files/jquery.ui.slider.js.Download"></script>
+	<!-- END: load slider -->
+  
+    
+  <!-- BEGIN: Uhrzeit -->
+  <script language="javascript" type="text/javascript">
+var timestampunterschied = 1711227648 * 1000 - new Date().getTime();
+</script>
+<script src="./STIEBEL ELTRON Reglersteuerung_files/uhrzeit.js.Download" type="text/javascript" language="javascript"></script>
+  <!-- END:  Uhrzeit -->
+  
+</head>
+<body>
+<div id="header">
+	<div class="head curdef">
+		<div id="meta">
+			<div id="login">
+      				You are registered as: <strong>sven</strong>
+        <form method="POST" name="logout" style="display:inline;margin-left:25px;">
+          <input type="submit" alt="Logout" name="logout" value="Logout" class="logoutbutton">
+        </form>
+      			</div>
+		</div>
+    <div class="eingestelle_sprache"><strong><a href="http://192.168.111.17/?s=5,3" style="color:white">ENGLISH</a></strong></div>
+    <div id="Uhrzeit"><strong>22:04</strong> 23.03.2024</div>
+		<div class="title">
+      <a href="http://192.168.111.17/" onclick="return checkChanges(this);" title="zur Startseite">
+        <img src="./STIEBEL ELTRON Reglersteuerung_files/title.png" alt="Servicewelt">
+		
+      </a>
+            <div style="position: relative; color: #97B765; font-weight: 900; margin: 18px 0px 0px 323px;"></div>
+          </div>
+		<div class="logo"><a href="http://192.168.111.17/" onclick="return checkChanges(this);" title="zur Startseite" class="home_link">&nbsp;</a></div>
+	</div>
+</div>
+
+
+<div class="container" id="page">
+  <div id="main">
+  <div id="SpacerFirefox"></div>
+    <div id="nav">
+      <div class="clear"></div>
+            <div class="nav left defaultfirst">
+        <div class="l left">&nbsp;</div>
+        <div class="c left link1">
+          <a onclick="return checkChanges(this);" href="http://192.168.111.17/?s=0">START</a>
+        </div>
+        <div class="r left">&nbsp;</div>
+        <div class="clear"></div>
+              </div>
+            <div class="nav left default parent">
+        <div class="l left">&nbsp;</div>
+        <div class="c left link2">
+          <a>INFO</a>
+        </div>
+        <div class="r left">&nbsp;</div>
+        <div class="clear"></div>
+                <div class="second">
+          <ul class="second ">
+                        <li>
+			  <a onclick="return checkChanges(this);" href="http://192.168.111.17/?s=1,0">SYSTEM</a>
+    			    
+            </li>
+                      <li>
+			  <a onclick="return checkChanges(this);" href="http://192.168.111.17/?s=1,1">HEAT PUMP</a>
+    			    
+            </li>
+                      <li>
+			  <a onclick="return checkChanges(this);" href="http://192.168.111.17/?s=1,9">licence terms</a>
+    			    
+            </li>
+                      <li>
+			  <a onclick="return checkChanges(this);" href="http://192.168.111.17/?s=1,10">USAGE AND DATA PROTECTION POLICY</a>
+    			    
+            </li>
+                      <li>
+			  <a onclick="return checkChanges(this);" href="http://192.168.111.17/?s=1,11">MANUAL</a>
+    			    
+            </li>
+                    </ul>
+        </div>
+              </div>
+            <div class="nav left default parent">
+        <div class="l left">&nbsp;</div>
+        <div class="c left link3">
+          <a>DIAGNOSIS</a>
+        </div>
+        <div class="r left">&nbsp;</div>
+        <div class="clear"></div>
+                <div class="second">
+          <ul class="second ">
+                        <li>
+			  <a onclick="return checkChanges(this);" href="http://192.168.111.17/?s=2,0">SYSTEM STATUS</a>
+    			    
+            </li>
+                      <li>
+			  <a onclick="return checkChanges(this);" href="http://192.168.111.17/?s=2,2">HEAT PUMP STATUS</a>
+    			    
+            </li>
+                      <li>
+			  <a onclick="return checkChanges(this);" href="http://192.168.111.17/?s=2,4">HEAT PUMP ANALYSIS</a>
+    			    
+            </li>
+                      <li>
+			  <a onclick="return checkChanges(this);" href="http://192.168.111.17/?s=2,6">INTERNAL CALCULATION</a>
+    			    
+            </li>
+                      <li>
+			  <a onclick="return checkChanges(this);" href="http://192.168.111.17/?s=2,7">SYSTEM</a>
+    			    
+            </li>
+                      <li>
+			  <a onclick="return checkChanges(this);" href="http://192.168.111.17/?s=2,9">NOTIFICATIONLIST</a>
+    			    
+            </li>
+                    </ul>
+        </div>
+              </div>
+            <div class="nav left default parent">
+        <div class="l left">&nbsp;</div>
+        <div class="c left link4">
+          <a>PROGRAMS</a>
+        </div>
+        <div class="r left">&nbsp;</div>
+        <div class="clear"></div>
+                <div class="second">
+          <ul class="second ">
+                        <li>
+			  <a onclick="return checkChanges(this);" href="http://192.168.111.17/?s=3,0">HEATING PROGRAM</a>
+    			    
+            </li>
+                      <li>
+			  <a onclick="return checkChanges(this);" href="http://192.168.111.17/?s=3,2">DHW PROGRAM</a>
+    			    
+            </li>
+                      <li>
+			  <a onclick="return checkChanges(this);" href="http://192.168.111.17/?s=3,4">DHW CIRCULATION PROGRAM</a>
+    			    
+            </li>
+                      <li>
+			  <a onclick="return checkChanges(this);" href="http://192.168.111.17/?s=3,6">SILENT PROGRAM 1</a>
+    			    
+            </li>
+                      <li>
+			  <a onclick="return checkChanges(this);" href="http://192.168.111.17/?s=3,7">SILENT PROGRAM 2</a>
+    			    
+            </li>
+                      <li>
+			  <a onclick="return checkChanges(this);" href="http://192.168.111.17/?s=3,12">PARTY PROGRAM</a>
+    			    
+            </li>
+                      <li>
+			  <a onclick="return checkChanges(this);" href="http://192.168.111.17/?s=3,13">HOLIDAY PROGRAM</a>
+    			    
+            </li>
+                      <li>
+			  <a onclick="return checkChanges(this);" href="http://192.168.111.17/?s=3,14">PASTEURISATION PROGRAM</a>
+    			    
+            </li>
+                    </ul>
+        </div>
+              </div>
+            <div class="nav left default parent">
+        <div class="l left">&nbsp;</div>
+        <div class="c left link5">
+          <a>SETTINGS</a>
+        </div>
+        <div class="r left">&nbsp;</div>
+        <div class="clear"></div>
+                <div class="second">
+          <ul class="second ">
+                        <li>
+			  <a onclick="return checkChanges(this);" href="http://192.168.111.17/?s=4,0">TIME / DATE</a>
+    			    
+            </li>
+                      <li>
+			  <a onclick="return checkChanges(this);" href="http://192.168.111.17/?s=4,1">SET SUMMER TIME</a>
+    			    
+            </li>
+                      <li>
+			  <a onclick="return checkChanges(this);" href="http://192.168.111.17/?s=4,2">HEATING</a>
+    			    
+            </li>
+                      <li>
+			  <a onclick="return checkChanges(this);" href="http://192.168.111.17/?s=4,3">DHW</a>
+    			    
+            </li>
+                      <li>
+			  <a onclick="return checkChanges(this);" href="http://192.168.111.17/?s=4,14">ENERGIEMANAGEMENT</a>
+    			    
+            </li>
+                      <li>
+			  <a onclick="return checkChanges(this);" href="http://192.168.111.17/?s=4,15">ISG</a>
+    			    
+            </li>
+                    </ul>
+        </div>
+              </div>
+            <div class="nav left defaultlast parent">
+        <div class="l left">&nbsp;</div>
+        <div class="c left link6">
+          <a>Profile</a>
+        </div>
+        <div class="r left">&nbsp;</div>
+        <div class="clear"></div>
+                <div class="second">
+          <ul class="second last">
+                        <li>
+			  <a onclick="return checkChanges(this);" href="http://192.168.111.17/?s=5,0">Network</a>
+    			    
+            </li>
+                      <li>
+			  <a onclick="return checkChanges(this);" href="http://192.168.111.17/?s=5,1">Safety</a>
+    			    
+            </li>
+                      <li>
+			  <a onclick="return checkChanges(this);" href="http://192.168.111.17/?s=5,2">System diagram</a>
+    			    
+            </li>
+                      <li>
+			  <a onclick="return checkChanges(this);" href="http://192.168.111.17/?s=5,3">LANGUAGE</a>
+    			    
+            </li>
+                    </ul>
+        </div>
+              </div>
+            <div class="clear"></div>
+    </div>
+        <div id="sub_nav" class="span-24"><div class="left main sifr span-9" style="width: 45%">HEAT PUMP ANALYSIS</div>
+<div class="span-15 last">
+</div>
+<div class="clear"></div></div>
+        <form id="werte" action="http://192.168.111.17/?s=2,4#" onsubmit="saveValues(this);return false;"><div id="content">
+    <div class="span-11 append-1" style="float:left"><table class="info"><tbody><tr><th colspan="2" class="round-top">HEAT PUMP ANALYSIS</th></tr>  <tr class="even">
+    <td class="key">SET SUPERHEATING</td>
+    <td class="value">-0,8°C</td>
+  </tr>
+  <tr class="odd">
+    <td class="key">ACTUAL SUPERHEATING V</td>
+    <td class="value">-0,7°C</td>
+  </tr>
+  <tr class="even">
+    <td class="key">CONTROL DEVIATION</td>
+    <td class="value">0,0K</td>
+  </tr>
+  <tr class="odd">
+    <td class="key">P FACTOR</td>
+    <td class="value">1,00</td>
+  </tr>
+  <tr class="even">
+    <td class="key">I FACTOR</td>
+    <td class="value">1,02</td>
+  </tr>
+  <tr class="odd">
+    <td class="key">D FACTOR</td>
+    <td class="value">1,00</td>
+  </tr>
+  <tr class="even">
+    <td class="key">PRE-CTRL OPENING EXV</td>
+    <td class="value">19,0%</td>
+  </tr>
+  <tr class="odd">
+    <td class="key">OPENING EXV</td>
+    <td class="value">19,4%</td>
+  </tr>
+  <tr class="even">
+    <td class="key">SUPERCOOLING COND</td>
+    <td class="value">0,2°C</td>
+  </tr>
+  <tr class="odd">
+    <td class="key">AMBIENT TEMP. INVERTER</td>
+    <td class="value">46,1°C</td>
+  </tr>
+  <tr class="even">
+    <td class="key">TEMP. INV. COMPRESSOR</td>
+    <td class="value">47,4°C</td>
+  </tr>
+  <tr class="odd">
+    <td class="key">MOTOR CURRENT</td>
+    <td class="value">6,6A</td>
+  </tr>
+  <tr class="even">
+    <td class="key">SUPERHEATING ADAPTATION</td>
+    <td class="value">-0,2K</td>
+  </tr>
+  <tr class="odd">
+    <td class="key">OPERATING MODE REFRIGERANT CIRCUIT CONTR.</td>
+    <td class="value">0,3</td>
+  </tr>
+  <tr class="even">
+    <td class="key">OPERATING MODE PASSIVE COOLING</td>
+    <td class="value">0,0</td>
+  </tr>
+  <tr class="odd">
+    <td class="key">SET SUPERHEATING, SUCTION GAS, COMPRESSO.</td>
+    <td class="value">11,8K</td>
+  </tr>
+  <tr class="even">
+    <td class="key">ACTUAL SUPERHEATING, SUCTION GAS, COMPRE.</td>
+    <td class="value">10,7K</td>
+  </tr>
+  <tr class="odd">
+    <td class="key round-leftbottom">COMPRESSOR SPEED LIMIT</td>
+    <td class="value round-rightbottom">102,8</td>
+  </tr>
+</tbody></table></div><div class="span-24">&nbsp;</div>
+    </div>  </form></div>
+</div>
+
+
+<div id="footer">
+	<!--[if IE]>
+	<style type="text/css">
+	#footer
+{
+		
+		height:260px;
+}
+	#versionsNummer
+	{
+		position:relative;
+		top:-33px;
+	}
+	</style>
+
+     	<![endif]-->
+	<div class="span-24 last footer_middle curdef">
+	
+		<div class="span-8 prepend-top" style="height:145px">
+					</div>
+	  
+    
+	</div>
+  <div class="links span-23 prepend-top append-1 last footer_middle">
+    <div class="span-17">
+        		<a class="intern" href="http://192.168.111.17/?forcepage=dsgvo" onclick="return checkChanges(this);">Data protection</a>
+				
+		<a href="http://www.stiebel-eltron.com/en/info/imprint.html">Impressum</a>
+      &nbsp;
+      <p style="margin-top:8px" class="right" id="versionsNummer">v12.2.3</p>
+    </div>
+  	<div class="copyright span-6 last curdef">
+  		© STIEBEL ELTRON 2024  	</div>
+  </div>
+</div>
+
+
+</body></html>
