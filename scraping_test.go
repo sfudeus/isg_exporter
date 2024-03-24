@@ -177,6 +177,6 @@ func TestPage(t *testing.T) {
 		t.Errorf("Failed to find expected onoff value")
 	}
 
-	json, _ := json.Marshal(valuesMap)
+	json, _ := json.MarshalIndent(valuesMap, "", "  ")
 	fmt.Println(string(json))
 }
