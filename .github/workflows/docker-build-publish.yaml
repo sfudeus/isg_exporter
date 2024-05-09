@@ -7,8 +7,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -35,13 +33,3 @@ jobs:
           "${{ github.repository }}:${{ steps.revision.outputs.target-revision }}"
           "${{ github.repository }}:latest"
         push: true
-    - name: Comment docker repo
-      uses: actions/github-script@v7
-      with:
-        script: |
-          github.rest.issues.createComment({
-            issue_number: context.issue.number,
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            body: 'Release published at docker.io/' + "${{ github.repository }}:${{ steps.revision.outputs.target-revision }}"
-          })
