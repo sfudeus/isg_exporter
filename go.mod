@@ -1,6 +1,6 @@
 module github.com/sfudeus/isg_exporter
 
-go 1.22
+go 1.23
 
 require (
 	github.com/PuerkitoBio/goquery v1.9.2
