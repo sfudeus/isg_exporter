@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM golang:1.22 AS builder
+FROM --platform=$BUILDPLATFORM golang:1.23 AS builder
 RUN mkdir /build
 COPY *.go go.* /build/
 WORKDIR /build
