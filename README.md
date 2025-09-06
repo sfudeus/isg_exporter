@@ -33,10 +33,10 @@ Application Options:
       --mqttDiscoveryTopicPrefix= Topic prefix for homeassistant discovery (default: homeassistant)
       --mqttUser=                 Username to use for the MQTT connection [$MQTT_USER]
       --mqttPassword=             Password to use for the MQTT connection [$MQTT_PASSWORD]
-      --metricsSectionPrefix      Prefix metrics with their section identifier in webscraping mode [$METRICS_SECTION_PREFIX]
+      --metricsWithSectionPrefix  Prefix metrics with their section identifier in webscraping mode [$METRICS_WITH_SECTION_PREFIX]
 
 Help Options:
-  -h, --help             Show this help message
+  -h, --help                      Show this help message
 ```
 
 ## Gathering "engines"
