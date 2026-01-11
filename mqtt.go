@@ -30,6 +30,9 @@ func connectMqtt() {
 	} else {
 		protocol = "tcp"
 	}
+	if len(options.MqttClientId) > 0 {
+		clientOptions.SetClientID(options.MqttClientId)
+	}
 	clientOptions.AddBroker(fmt.Sprintf("%s://%s:%d", protocol, options.MqttHost, options.MqttPort))
 	if options.MqttTlsInsecure && options.MqttTls {
 		clientOptions.SetTLSConfig(&tls.Config{InsecureSkipVerify: true})
