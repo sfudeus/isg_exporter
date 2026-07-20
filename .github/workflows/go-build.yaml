@@ -18,7 +18,7 @@ jobs:
       CGO_ENABLED: "0"
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/setup-go@v6
+      - uses: actions/setup-go@v7
         with:
           go-version: ${{ matrix.go }}
       - name: go build
