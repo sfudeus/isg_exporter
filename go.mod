@@ -1,11 +1,11 @@
 module github.com/sfudeus/isg_exporter
 
-go 1.26.0
+go 1.26.10
 
 require (
 	github.com/PuerkitoBio/goquery v1.13.0
 	github.com/eclipse/paho.mqtt.golang v1.5.1
-	github.com/gin-contrib/pprof v1.5.6
+	github.com/gin-contrib/pprof v1.5.7
 	github.com/gin-gonic/gin v1.12.0
 	github.com/headzoo/surf v1.0.1
 	github.com/jessevdk/go-flags v1.6.1
