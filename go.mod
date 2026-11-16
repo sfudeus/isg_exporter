@@ -5,7 +5,7 @@ go 1.26.10
 require (
 	github.com/PuerkitoBio/goquery v1.13.0
 	github.com/eclipse/paho.mqtt.golang v1.5.1
-	github.com/gin-contrib/pprof v1.5.7
+	github.com/gin-contrib/pprof v1.5.8
 	github.com/gin-gonic/gin v1.12.0
 	github.com/headzoo/surf v1.0.1
 	github.com/jessevdk/go-flags v1.6.1
@@ -51,7 +51,7 @@ require (
 	go.mongodb.org/mongo-driver/v2 v2.9.2 // indirect
 	golang.org/x/arch v0.32.0 // indirect
 	golang.org/x/crypto v0.58.0 // indirect
-	golang.org/x/net v0.61.0 // indirect
+	golang.org/x/net v0.62.0 // indirect
 	golang.org/x/sync v0.24.0 // indirect
 	golang.org/x/sys v0.49.0 // indirect
 	golang.org/x/text v0.43.0 // indirect
